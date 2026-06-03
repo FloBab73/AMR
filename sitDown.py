@@ -4,10 +4,36 @@ from std_msgs.msg import String
 import time
 import os
 import re
+import argparse
+from enum import Enum
 from naoqi_bridge_msgs.msg import JointAnglesWithSpeed
 
 
 MIN_DURATION = 0.05  # minimum seconds to dwell on each keyframe
+
+
+class Motion(Enum):
+    """Available motions mapped to their recorded motion files."""
+    sitDown = 'sitDownMotion.md'
+    standUp = 'standUpMotion.md'
+    pickUp  = 'pickUpMotion.md'
+
+    @property
+    def path(self) -> str:
+        """Absolute path to this motion's file, resolved next to this script."""
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(script_dir, self.value)
+
+    @classmethod
+    def from_name(cls, name: str) -> 'Motion':
+        """argparse type converter: map a name to a Motion with a clean error."""
+        try:
+            return cls[name]
+        except KeyError:
+            choices = ', '.join(m.name for m in cls)
+            raise argparse.ArgumentTypeError(
+                f"invalid motion '{name}' (choose from {choices})"
+            )
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -87,16 +113,22 @@ class NaoCommandPublisher(Node):
         self.posture_pub = self.create_publisher(String,               '/cmd_pose',     10)
         self.joint_pub   = self.create_publisher(JointAnglesWithSpeed, '/joint_angles', 10)
 
-        # Wait until the bridge has connected to both topics (max 10 s)
-        self.get_logger().info("Waiting for naoqi_bridge subscribers...")
+        # Wait until the bridge has subscribed to /joint_angles (the only topic
+        # we actually publish to during playback). /cmd_pose is intentionally
+        # NOT required here: the naoqi driver does not subscribe to it, so
+        # gating on it stalled the full timeout on every run.
+        self.get_logger().info("Waiting for a subscriber on /joint_angles...")
         deadline = time.time() + 10.0
         while time.time() < deadline:
-            if (self.joint_pub.get_subscription_count() > 0 and
-                    self.posture_pub.get_subscription_count() > 0):
+            if self.joint_pub.get_subscription_count() > 0:
                 break
             time.sleep(0.2)
         if self.joint_pub.get_subscription_count() == 0:
-            self.get_logger().warn("No subscriber on /joint_angles after 10 s — messages may be lost.")
+            self.get_logger().warn(
+                "No subscriber on /joint_angles after 10 s — is naoqi_driver running "
+                "with the right nao_ip, and do both terminals share ROS_DOMAIN_ID / RMW? "
+                "Messages will be lost and the robot will not move."
+            )
         else:
             self.get_logger().info("Bridge connected.")
 
@@ -169,11 +201,19 @@ class NaoCommandPublisher(Node):
 # ---------------------------------------------------------------------------
 
 def main(args=None):
-    rclpy.init(args=args)
+    parser = argparse.ArgumentParser(description='Play a recorded NAO motion.')
+    parser.add_argument(
+        'motion',
+        type=Motion.from_name,
+        metavar='{' + ','.join(m.name for m in Motion) + '}',
+        help='Which motion to play: ' + ', '.join(m.name for m in Motion),
+    )
+    parsed, ros_args = parser.parse_known_args(args)
 
-    # Path to the recorded motion file (adjust as needed)
-    script_dir   = os.path.dirname(os.path.abspath(__file__))
-    motion_file  = os.path.join(script_dir, 'sitDownMotion.md')
+    rclpy.init(args=ros_args)
+
+    # Path to the recorded motion file, selected by the chosen motion
+    motion_file = parsed.motion.path
 
     # Tunable parameters
     POSE_SPEED   = 0.15  # hardware joint speed fraction (0.0–1.0) — lower = smoother tracking

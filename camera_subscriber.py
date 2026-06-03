@@ -11,7 +11,7 @@ class NaoCameraCollector(Node):
     def __init__(self):
         super().__init__('nao_command_publisher')
         self.bridge = CvBridge()
-        self.counter = 126
+        self.counter = 159
         self.camera_sub = self.create_subscription(Image, '/camera/bottom/image_raw', self.get_camera_data, 10)
         
 
