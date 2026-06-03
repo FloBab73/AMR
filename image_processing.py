@@ -11,22 +11,40 @@ def draw_result_on_image(image_path, object):
     coords = object["coords"]
     for coord in coords:
         color = image[coord[0], coord[1]]
-        color[1] += 100
+        
+        color[1] = color[1]/2
         image[coord[0], coord[1]] = color
 
     cy, cx = coords.mean(axis=0).astype(int)
     image[cx, cy] = [255, 0 , 0]
 
-    cv2.imshow("result", image)
-    cv2.waitKey(0)
-
+    return image
 
 def get_image_path(index):
     return f"images/image_{index}.jpg"
 
-for i in range(84, 125):
-    result = detect_and_segment(get_image_path(i), "tafelschwamm")
-    box = result["box"] if result else 'Not found'
-    print(f"{i} | {datetime.now()} | {box}")
+not_found = []
+found = []
 
-# draw_result_on_image(IMAGE_PATH, result)
+for i in range(0, 158):
+    simpel = "Tafelschwamm"
+    englisch = "sponge"
+    umgebung = "Ein Tafelschwamm steht auf einer Oberfläche"
+    sehr_explizit = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
+
+    result = detect_and_segment(get_image_path(i), sehr_explizit)
+
+    if result == -1:
+        None
+    elif result:
+        box = result["box"] 
+        print(f"{i} | {datetime.now()} | {box}")
+        image = draw_result_on_image(get_image_path(i), result)
+        cv2.imwrite(f"./out/result_{i}.jpg", image)
+        found.append(i)
+    else:
+        print(f"{i} | {datetime.now()} | Not found")
+        not_found.append(i)
+
+print(f"found {len(found)} of {len(found) + len (not_found)}")
+print(f"not found: {not_found}")

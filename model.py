@@ -37,7 +37,6 @@ def get_box_with_dino(image, text_prompt):
         return []
 
     box = results["boxes"][0].cpu().numpy()  # [x1, y1, x2, y2]
-    print(f"Gefunden: '{results['text_labels'][0]}' | Score: {results['scores'][0]:.2f} | top left: [{box[0]}, {box[1]}] bottom right: [{box[2]}, {box[3]}]")
     return box
 
 def get_mask_from_sam(image, box):
@@ -65,7 +64,7 @@ def detect_and_segment(image_path, text_prompt: str):
     try:
         image = Image.open(image_path).convert("RGB")
     except:
-        return None
+        return -1
 
     box = get_box_with_dino(image, text_prompt)
     if not len(box):
