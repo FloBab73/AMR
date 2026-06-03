@@ -1,7 +1,6 @@
 import torch
 from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
 from transformers import SamModel, SamProcessor
-from PIL import Image
 import numpy as np
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -60,11 +59,7 @@ def get_mask_from_sam(image, box):
     return mask, coords
 
 
-def detect_and_segment(image_path, text_prompt: str):
-    try:
-        image = Image.open(image_path).convert("RGB")
-    except:
-        return -1
+def detect_and_segment(image, text_prompt: str):
 
     box = get_box_with_dino(image, text_prompt)
     if not len(box):
@@ -72,4 +67,7 @@ def detect_and_segment(image_path, text_prompt: str):
 
     mask, coords = get_mask_from_sam(image, box)
 
-    return {"box": box, "mask": mask, "coords": coords}
+    meany, meanx = coords.mean(axis=0).astype(int)
+
+
+    return {"box": box, "mask": mask, "coords": coords, "mean": {"x": meanx, "y": meany}}

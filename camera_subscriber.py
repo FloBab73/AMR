@@ -21,10 +21,11 @@ class NaoCameraCollector(Node):
             msg,
             desired_encoding='bgr8'
         )
-        print("jetzt")
-        imageName: str = f"./images/image_{self.counter}.jpg"
-        cv2.imwrite(imageName, frame)
-        self.counter = self.counter + 1
+        # print("jetzt")
+        # imageName: str = f"./images/image_{self.counter}.jpg"
+        # cv2.imwrite(imageName, frame)
+        # self.counter = self.counter + 1
+        return frame
 
 
 

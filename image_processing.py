@@ -1,9 +1,11 @@
 import cv2
 from model import detect_and_segment
 from datetime import datetime
+from PIL import Image
 
 def draw_result_on_image(image_path, object):
     image = cv2.imread(image_path)
+    print(image.shape[1])
 
     box = object["box"]
     cv2.rectangle(image, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), color=(0, 255, 0), thickness=1)
@@ -32,11 +34,14 @@ for i in range(0, 158):
     umgebung = "Ein Tafelschwamm steht auf einer Oberfläche"
     sehr_explizit = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 
-    result = detect_and_segment(get_image_path(i), sehr_explizit)
-
-    if result == -1:
+    try:
+        image = Image.open(get_image_path(i)).convert("RGB")
+    except:
         None
-    elif result:
+    
+    result = detect_and_segment(image, sehr_explizit)
+
+    if result:
         box = result["box"] 
         print(f"{i} | {datetime.now()} | {box}")
         image = draw_result_on_image(get_image_path(i), result)
