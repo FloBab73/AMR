@@ -21,20 +21,5 @@ class NaoCameraCollector(Node):
             msg,
             desired_encoding='bgr8'
         )
-        # print("jetzt")
-        # imageName: str = f"./images/image_{self.counter}.jpg"
-        # cv2.imwrite(imageName, frame)
-        # self.counter = self.counter + 1
         return frame
 
-
-
-
-def main(args=None):
-    rclpy.init(args=args)
-    node = NaoCameraCollector()
-    rclpy.spin(node)
-
-
-if __name__ == '__main__':
-    main()

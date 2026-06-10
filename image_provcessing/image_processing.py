@@ -1,5 +1,5 @@
 import cv2
-from model import detect_and_segment
+from image_provcessing.model import detect_and_segment
 from datetime import datetime
 from PIL import Image
 

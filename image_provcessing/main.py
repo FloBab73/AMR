@@ -1,5 +1,5 @@
-from camera_subscriber import NaoCameraCollector
-from model import detect_and_segment
+from Nao.camera_subscriber import NaoCameraCollector
+from image_provcessing.model import detect_and_segment
 
 PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 SIDEWAYS_MOTION_TOLERANCE = 0.1
@@ -18,14 +18,11 @@ def go_to_target_and_pick_up():
         image_width = image.shape[1]
         target = object["mean"]["x"]
         if target > image_width * (0.5+SIDEWAYS_MOTION_TOLERANCE):
-            shuffle_right()
+            print("Shuffel right")
         elif target < image_width * (0.5+SIDEWAYS_MOTION_TOLERANCE):
-            shuffle_left()
+            print("Shuffel left")
         else:
-            if foot_sensors_pressed():
-                pickup_sponge()
-            else:
-                walk_straight()
+            print("else")
 
 
 def main():
