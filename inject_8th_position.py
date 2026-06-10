@@ -80,7 +80,7 @@ def inject(lines: list[str], values: list[str]) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
-    in_path = argv[1] if len(argv) > 1 else 'pickUpMotion.md'
+    in_path = argv[1] if len(argv) > 1 else 'pickUpMotionCleaned.md'
     values_path = argv[2] if len(argv) > 2 else 'eighth_position.txt'
     out_path = argv[3] if len(argv) > 3 else _default_out(in_path)
 

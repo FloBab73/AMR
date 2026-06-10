@@ -37,4 +37,8 @@ Publisher count: 0
 Subscription count: 1
 
 
+//echo joint states
+ros2 topic echo /joint_states
+
+
 

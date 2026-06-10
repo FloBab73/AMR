@@ -16,7 +16,7 @@ class Motion(Enum):
     """Available motions mapped to their recorded motion files."""
     sitDown = 'sitDownMotion.md'
     standUp = 'standUpMotion.md'
-    pickUp  = 'pickUpMotion.md'
+    pickUp  = 'pickUpMotionCleaned.md'
 
     @property
     def path(self) -> str:

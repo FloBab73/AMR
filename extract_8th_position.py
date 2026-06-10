@@ -54,7 +54,7 @@ def collect_positions(text: str) -> list[list[float]]:
 
 
 def main(argv: list[str]) -> int:
-    in_path = argv[1] if len(argv) > 1 else 'pickUpMotion.md'
+    in_path = argv[1] if len(argv) > 1 else 'pickUpMotionCleaned.md'
     out_path = argv[2] if len(argv) > 2 else 'eighth_position.txt'
 
     with open(in_path, 'r') as f:
