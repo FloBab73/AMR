@@ -1,4 +1,5 @@
 import json
+
 import numpy as np
 import rclpy
 from PIL import Image as PILImage
@@ -6,8 +7,8 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
 
-from model import detect_and_segment
 from image_processing import draw_result_on_image
+from model import detect_and_segment
 
 PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 SIDEWAYS_MOTION_TOLERANCE = 0.2
@@ -41,8 +42,6 @@ class ImageProcessor(Node):
         pil_image = PILImage.fromarray(frame[:, :, ::-1])
 
         result = detect_and_segment(pil_image, PROMPT)
-
-
         if not result:
             self.publish_command("none")
             return
@@ -53,10 +52,10 @@ class ImageProcessor(Node):
         angle = result["angle"]
 
         if angle > 10:
-            self.publish_command("rotate_right", angle, 1)
+            self.publish_command("rotate_right", 1)
             draw_result_on_image(pil_image, result, "rotate_right")
         elif angle < -10:
-            self.publish_command("rotate_left", -angle, 1)
+            self.publish_command("rotate_left", 1)
             draw_result_on_image(pil_image, result, "rotate_left")
         elif target > image_width * (0.5 + SIDEWAYS_MOTION_TOLERANCE):
             self.publish_command("right", 2)
@@ -64,17 +63,20 @@ class ImageProcessor(Node):
         elif target < image_width * (0.5 - SIDEWAYS_MOTION_TOLERANCE):
             self.publish_command("left", 2)
             draw_result_on_image(pil_image, result, "left")
-        elif box_width < image_width * FAR_WIDTH_TOLERANCE and (target < image_width * (0.5 - FAR_SIDEWAYS_MOTION_TOLERANCE) or target > image_width * (0.5 + FAR_SIDEWAYS_MOTION_TOLERANCE)):
+        elif box_width < image_width * FAR_WIDTH_TOLERANCE and (
+            target < image_width * (0.5 - FAR_SIDEWAYS_MOTION_TOLERANCE)
+            or target > image_width * (0.5 + FAR_SIDEWAYS_MOTION_TOLERANCE)
+        ):
             self.publish_command("forward", 4)
             draw_result_on_image(pil_image, result, "forward")
         else:
-            self.publish_command("center", 2)
+            self.publish_command("forward", 2)
             draw_result_on_image(pil_image, result, "center")
 
     def publish_command(self, command: str, value: float = None):
-        payload = {"command": command, "value": value}
+        payload = {"command": command, "duration": value}
         self.command_pub.publish(String(data=json.dumps(payload)))
-        self.get_logger().info(f"command: {command}, value: {value}")
+        self.get_logger().info(f"command: {command}, duration: {value}")
 
 
 def main(args=None):
