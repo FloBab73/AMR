@@ -27,31 +27,32 @@ def draw_result_on_image(image, object):
 def get_image_path(index):
     return f"../images/image_{index}.jpg"
 
-not_found = []
-found = []
+def main():
+    not_found = []
+    found = []
 
-for i in range(0, 158):
-    simpel = "Tafelschwamm"
-    englisch = "sponge"
-    umgebung = "Ein Tafelschwamm steht auf einer Oberfläche"
-    sehr_explizit = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
+    for i in range(0, 158):
+        simpel = "Tafelschwamm"
+        englisch = "sponge"
+        umgebung = "Ein Tafelschwamm steht auf einer Oberfläche"
+        sehr_explizit = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 
-    try:
-        image = Image.open(get_image_path(i)).convert("RGB")
-    except:
-        print("Image not found, skipping")
-        continue
-    
-    result = detect_and_segment(image, sehr_explizit)
+        try:
+            image = Image.open(get_image_path(i)).convert("RGB")
+        except:
+            print("Image not found, skipping")
+            continue
+        
+        result = detect_and_segment(image, sehr_explizit)
 
-    if result:
-        box = result["box"] 
-        print(f"{i} | {datetime.now()} | {box}")
-        draw_result_on_image(image, result)
-        found.append(i)
-    else:
-        print(f"{i} | {datetime.now()} | Not found")
-        not_found.append(i)
+        if result:
+            box = result["box"] 
+            print(f"{i} | {datetime.now()} | {box}")
+            draw_result_on_image(image, result)
+            found.append(i)
+        else:
+            print(f"{i} | {datetime.now()} | Not found")
+            not_found.append(i)
 
-print(f"found {len(found)} of {len(found) + len (not_found)}")
-print(f"not found: {not_found}")
+    print(f"found {len(found)} of {len(found) + len (not_found)}")
+    print(f"not found: {not_found}")
