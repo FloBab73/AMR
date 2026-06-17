@@ -10,7 +10,6 @@ from image_processing import draw_result_on_image
 
 PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 SIDEWAYS_MOTION_TOLERANCE = 0.1
-BOX_PIXEL_TOLERANCE = 5  # Allow boxes to differ by up to 5 pixels
 
 IMAGE_TOPIC = "/camera/bottom/image_republished"
 COMMAND_TOPIC = "/KI_Node/command"
@@ -40,7 +39,6 @@ class ImageProcessor(Node):
 
         result = detect_and_segment(pil_image, PROMPT)
 
-        draw_result_on_image(pil_image, result)
 
         if not result:
             self.publish_command("none")
@@ -51,10 +49,13 @@ class ImageProcessor(Node):
 
         if target > image_width * (0.5 + SIDEWAYS_MOTION_TOLERANCE):
             self.publish_command("right")
+            draw_result_on_image(pil_image, result, "right")
         elif target < image_width * (0.5 - SIDEWAYS_MOTION_TOLERANCE):
             self.publish_command("left")
+            draw_result_on_image(pil_image, result, "left")
         else:
             self.publish_command("center")
+            draw_result_on_image(pil_image, result, "center")
 
     def publish_command(self, command: str):
         print(command)
