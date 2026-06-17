@@ -1,9 +1,9 @@
+import numpy as np
 import rclpy
+from PIL import Image as PILImage
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
-import numpy as np
-from PIL import Image as PILImage
 
 from model import detect_and_segment
 from image_processing import draw_result_on_image
@@ -12,8 +12,8 @@ PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 SIDEWAYS_MOTION_TOLERANCE = 0.1
 BOX_PIXEL_TOLERANCE = 5  # Allow boxes to differ by up to 5 pixels
 
-IMAGE_TOPIC = '/camera/bottom/image_republished'
-COMMAND_TOPIC = '/KI_Node/command'
+IMAGE_TOPIC = "/camera/bottom/image_republished"
+COMMAND_TOPIC = "/KI_Node/command"
 
 
 def boxes_match(box1, box2, tolerance=BOX_PIXEL_TOLERANCE):
@@ -32,10 +32,8 @@ class ImageProcessor(Node):
     and publishes a movement command as a String."""
 
     def __init__(self):
-        super().__init__('KI_Node')
-        self.image_sub = self.create_subscription(
-            Image, IMAGE_TOPIC, self.on_image, 10
-        )
+        super().__init__("KI_Node")
+        self.image_sub = self.create_subscription(Image, IMAGE_TOPIC, self.on_image, 10)
         self.command_pub = self.create_publisher(String, COMMAND_TOPIC, 10)
         self.get_logger().info(
             f"Listening on '{IMAGE_TOPIC}', publishing commands on '{COMMAND_TOPIC}'."
@@ -44,7 +42,9 @@ class ImageProcessor(Node):
     def on_image(self, msg: Image):
         # self.publish_command(f"got image: {msg}")
         # Decode BGR8 bytes directly — no cv_bridge required
-        frame = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, 3)
+        frame = np.frombuffer(msg.data, dtype=np.uint8).reshape(
+            msg.height, msg.width, 3
+        )
 
         # BGR -> RGB, then wrap in PIL
         pil_image = PILImage.fromarray(frame[:, :, ::-1])
