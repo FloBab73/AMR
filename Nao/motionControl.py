@@ -5,6 +5,7 @@ import time
 from enum import Enum
 
 import rclpy
+from bumperSubscriber import BumperListener
 from naoqi_bridge_msgs.msg import JointAnglesWithSpeed
 from rclpy.node import Node
 from std_msgs.msg import String
@@ -18,9 +19,9 @@ MIN_DURATION = 0.05  # minimum seconds to dwell on each keyframe
 class Motion(Enum):
     """Available motions mapped to their recorded motion files."""
 
-    sitDown = "sitDownMotion.md"
-    standUp = "standUpMotion.md"
-    pickUp = "pickUpMotionCleaned.md"
+    sitDown = "./motionFiles/sitDownMotion.md"
+    standUp = "./motionFiles/standUpMotion.md"
+    pickUp = "./motionFiles/pickUpMotion.md"
 
     @property
     def path(self) -> str:
@@ -102,98 +103,6 @@ def parse_motion_file(filepath: str) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# NaoCommandPublisher Node
-# ---------------------------------------------------------------------------
-
-
-# class NaoCommandPublisher(Node):
-#     """Persistent ROS2 node that owns the /joint_angles publisher.
-#     Initialise once, then call play(motion) as many times as needed."""
-
-#     def __init__(self, pose_speed: float = 0.15, motion_speed: float = 0.2):
-#         super().__init__("nao_command_publisher")
-
-#         self.pose_speed = pose_speed  # hardware joint speed fraction (0–1)
-#         self.motion_speed = motion_speed  # playback speed in rad/s
-
-#         self.posture_pub = self.create_publisher(String, "/cmd_pose", 10)
-#         self.joint_pub = self.create_publisher(
-#             JointAnglesWithSpeed, "/joint_angles", 10
-#         )
-
-#         # Wait for the bridge to subscribe — done once at startup.
-#         self.get_logger().info("Waiting for a subscriber on /joint_angles...")
-#         deadline = time.time() + 10.0
-#         while time.time() < deadline:
-#             if self.joint_pub.get_subscription_count() > 0:
-#                 break
-#             time.sleep(0.2)
-#         if self.joint_pub.get_subscription_count() == 0:
-#             self.get_logger().warn(
-#                 "No subscriber on /joint_angles after 10 s — is naoqi_driver running "
-#                 "with the right nao_ip, and do both terminals share ROS_DOMAIN_ID / RMW? "
-#                 "Messages will be lost and the robot will not move."
-#             )
-#         else:
-#             self.get_logger().info("Bridge connected.")
-
-#     # ------------------------------------------------------------------
-#     # Low-level helpers
-#     # ------------------------------------------------------------------
-
-#     def send_pose(self, joints: list, angles: list, speed: float | None = None):
-#         msg = JointAnglesWithSpeed()
-#         msg.joint_names = joints
-#         msg.joint_angles = angles
-#         msg.speed = speed if speed is not None else self.pose_speed
-#         msg.relative = False
-#         self.joint_pub.publish(msg)
-
-#     # ------------------------------------------------------------------
-#     # Motion playback
-#     # ------------------------------------------------------------------
-
-#     def _play_poses(self, poses: list[dict]):
-#         prev_map: dict[str, float] = {}
-
-#         self.get_logger().info(
-#             f"Starting motion playback: {len(poses)} poses, "
-#             f"motion_speed={self.motion_speed} rad/s"
-#         )
-
-#         for idx, pose in enumerate(poses):
-#             joints = pose["joints"]
-#             targets = pose["angles"]
-#             starts = [prev_map.get(j, t) for j, t in zip(joints, targets)]
-
-#             max_delta = max((abs(t - s) for s, t in zip(starts, targets)), default=0.0)
-#             duration = max(max_delta / self.motion_speed, MIN_DURATION)
-
-#             self.get_logger().info(
-#                 f"  Pose {idx + 1}/{len(poses)} — {len(joints)} joints, "
-#                 f"max_delta={max_delta:.3f} rad, duration={duration:.2f}s"
-#             )
-
-#             self.send_pose(joints, targets)
-#             time.sleep(duration)
-
-#             for j, t in zip(joints, targets):
-#                 prev_map[j] = t
-
-#         self.get_logger().info("Motion playback complete.")
-#         time.sleep(2.0)  # give DDS time to transmit the final pose
-
-#     def play(self, motion: Motion):
-#         """Load and play the given motion. Reuses the existing node/publisher."""
-#         poses = parse_motion_file(motion.path)
-#         if not poses:
-#             self.get_logger().error(f"No poses loaded for '{motion.name}'. Aborting.")
-#             return
-#         self.get_logger().info(f"Loaded {len(poses)} poses for '{motion.name}'.")
-#         self._play_poses(poses)
-
-
-# ---------------------------------------------------------------------------
 # MotionControl Node
 # ---------------------------------------------------------------------------
 
@@ -204,33 +113,6 @@ class MotionControl(Node):
 
     """Persistent ROS2 node that owns the /joint_angles publisher.
     Initialise once, then call play(motion) as many times as needed."""
-
-    # def __init__(self, pose_speed: float = 0.15, motion_speed: float = 0.2):
-    #     super().__init__("nao_command_publisher")
-
-    #     self.pose_speed = pose_speed  # hardware joint speed fraction (0–1)
-    #     self.motion_speed = motion_speed  # playback speed in rad/s
-
-    #     self.posture_pub = self.create_publisher(String, "/cmd_pose", 10)
-    #     self.joint_pub = self.create_publisher(
-    #         JointAnglesWithSpeed, "/joint_angles", 10
-    #     )
-
-    #     # Wait for the bridge to subscribe — done once at startup.
-    #     self.get_logger().info("Waiting for a subscriber on /joint_angles...")
-    #     deadline = time.time() + 10.0
-    #     while time.time() < deadline:
-    #         if self.joint_pub.get_subscription_count() > 0:
-    #             break
-    #         time.sleep(0.2)
-    #     if self.joint_pub.get_subscription_count() == 0:
-    #         self.get_logger().warn(
-    #             "No subscriber on /joint_angles after 10 s — is naoqi_driver running "
-    #             "with the right nao_ip, and do both terminals share ROS_DOMAIN_ID / RMW? "
-    #             "Messages will be lost and the robot will not move."
-    #         )
-    #     else:
-    #         self.get_logger().info("Bridge connected.")
 
     # ------------------------------------------------------------------
     # Low-level helpers
@@ -322,6 +204,11 @@ class MotionControl(Node):
             )
         else:
             self.get_logger().info("Bridge connected.")
+
+        BumperListener(on_pressed=self.on_bumper_press)
+
+    def on_bumper_press(self, msg):
+        print(f"Bumper {msg.bumper} was pressed in motion control")
 
     def on_command(self, msg: String):
         command = msg.data
