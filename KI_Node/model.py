@@ -64,10 +64,12 @@ def detect_and_segment(image, text_prompt: str):
     box = get_box_with_dino(image, text_prompt)
     if not len(box):
         return None
+    
+    box_width = box[2] - box[0]
 
     mask, coords = get_mask_from_sam(image, box)
 
     meany, meanx = coords.mean(axis=0).astype(int)
 
 
-    return {"box": box, "mask": mask, "coords": coords, "mean": {"x": meanx, "y": meany}}
+    return {"box": box, "box_width": box_width, "mask": mask, "coords": coords, "mean": {"x": meanx, "y": meany}}

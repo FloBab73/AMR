@@ -10,9 +10,21 @@ from image_processing import draw_result_on_image
 
 PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 SIDEWAYS_MOTION_TOLERANCE = 0.1
+BOX_PIXEL_TOLERANCE = 5  # Allow boxes to differ by up to 5 pixels
 
 IMAGE_TOPIC = '/camera/bottom/image_republished'
 COMMAND_TOPIC = '/KI_Node/command'
+
+
+def boxes_match(box1, box2, tolerance=BOX_PIXEL_TOLERANCE):
+    """Check if two boxes are approximately equal within pixel tolerance."""
+    if box1 is None or box2 is None:
+        return box1 == box2
+    try:
+        # Assuming box is [x1, y1, x2, y2] or similar coordinate format
+        return all(abs(b1 - b2) <= tolerance for b1, b2 in zip(box1, box2))
+    except (TypeError, ValueError):
+        return box1 == box2
 
 
 class ImageProcessor(Node):
@@ -36,7 +48,23 @@ class ImageProcessor(Node):
 
         # BGR -> RGB, then wrap in PIL
         pil_image = PILImage.fromarray(frame[:, :, ::-1])
-        result = detect_and_segment(pil_image, PROMPT)
+
+
+        result1 = detect_and_segment(pil_image, PROMPT)
+        result2 = detect_and_segment(pil_image, PROMPT)
+
+        if boxes_match(result1["box"], result2["box"]):
+            result = result1
+            print("Consistent results from both runs, using result1")
+        else:
+            result3 = detect_and_segment(pil_image, PROMPT)
+            if boxes_match(result1["box"], result3["box"]):
+                result = result1
+                print("Consistent results from runs 1 and 3, using result1")
+            elif boxes_match(result2["box"], result3["box"]):
+                result = result2
+                print("Consistent results from runs 2 and 3, using result2")
+
         draw_result_on_image(pil_image, result)
 
         if not result:
