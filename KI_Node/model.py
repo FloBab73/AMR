@@ -1,4 +1,5 @@
 import torch
+import cv2
 from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
 from transformers import SamModel, SamProcessor
 import numpy as np
@@ -59,6 +60,55 @@ def get_mask_from_sam(image, box):
     return mask, coords
 
 
+def get_top_edge_angle_from_mask(mask):
+    contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if len(contours) == 0:
+        return None
+
+    contour = max(contours, key=cv2.contourArea)
+    if cv2.contourArea(contour) == 0:
+        return None
+
+    rect = cv2.minAreaRect(contour)
+    box = cv2.boxPoints(rect)
+
+    best_edge = None
+    best_error = float("inf")
+    best_mean_y = float("inf")
+
+    for i in range(4):
+        p1 = box[i]
+        p2 = box[(i + 1) % 4]
+        dx, dy = p2 - p1
+        angle = np.degrees(np.arctan2(dy, dx))
+        if angle >= 90:
+            angle -= 180
+        elif angle < -90:
+            angle += 180
+
+        abs_angle = abs(angle)
+        mean_y = (p1[1] + p2[1]) / 2.0
+
+        # Prefer the most horizontal edge, then the upper one if tied.
+        if abs_angle < best_error or (abs_angle == best_error and mean_y < best_mean_y):
+            best_error = abs_angle
+            best_mean_y = mean_y
+            best_edge = (p1, p2)
+
+    if best_edge is None:
+        return None
+
+    p1, p2 = np.array(best_edge[0], dtype=np.float32), np.array(best_edge[1], dtype=np.float32)
+    dx, dy = p2 - p1
+    angle = np.degrees(np.arctan2(dy, dx))
+    if angle >= 90:
+        angle -= 180
+    elif angle < -90:
+        angle += 180
+
+    return angle
+
+
 def detect_and_segment(image, text_prompt: str):
 
     box = get_box_with_dino(image, text_prompt)
@@ -70,6 +120,6 @@ def detect_and_segment(image, text_prompt: str):
     mask, coords = get_mask_from_sam(image, box)
 
     meany, meanx = coords.mean(axis=0).astype(int)
+    angle = get_top_edge_angle_from_mask(mask)
 
-
-    return {"box": box, "box_width": box_width, "mask": mask, "coords": coords, "mean": {"x": meanx, "y": meany}}
+    return {"box": box, "box_width": box_width, "mask": mask, "coords": coords, "mean": {"x": meanx, "y": meany}, "angle": angle}
