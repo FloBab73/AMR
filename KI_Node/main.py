@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image as PILImage
 
 from model import detect_and_segment
+from image_processing import draw_result_on_image
 
 PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
 SIDEWAYS_MOTION_TOLERANCE = 0.1
@@ -36,6 +37,7 @@ class ImageProcessor(Node):
         # BGR -> RGB, then wrap in PIL
         pil_image = PILImage.fromarray(frame[:, :, ::-1])
         result = detect_and_segment(pil_image, PROMPT)
+        draw_result_on_image(pil_image, result)
 
         if not result:
             self.publish_command("none")
