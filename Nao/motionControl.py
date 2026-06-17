@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import re
 import time
@@ -8,7 +9,7 @@ import rclpy
 from naoqi_bridge_msgs.msg import Bumper, JointAnglesWithSpeed
 from rclpy.node import Node
 from std_msgs.msg import String
-from stepToTheSide import move_forward, move_sideways
+from stepToTheSide import move_forward, move_sideways, rotate
 
 BUMPER_TOPIC = "/bumper"
 COMMAND_TOPIC = "/KI_Node/command"
@@ -172,7 +173,8 @@ class MotionControl(Node):
     def __init__(self, pose_speed: float = 0.15, motion_speed: float = 0.2):
         super().__init__("motion_control")
         self.none_count = 0
-
+        self.command_count = 0
+        self.bumper = False
         # Single shared publisher node — reused for every motion command.
         # self.nao_pub = NaoCommandPublisher(pose_speed=0.15, motion_speed=0.2)
 
@@ -212,29 +214,60 @@ class MotionControl(Node):
         )
         self.get_logger().info(f"Listening for bumper events on '{BUMPER_TOPIC}'.")
 
+        move_forward(self)
+        # self.play(Motion.sitDown)
+
     def on_bumper_press(self, msg):
         print(f"Bumper {msg.bumper} was pressed in motion control")
+        self.bumper = True
 
     def on_command(self, msg: String):
-        command = msg.data
 
-        if command == "right":
-            self.none_count = 0
-            move_sideways(self, "right")
-        elif command == "left":
-            self.none_count = 0
-            move_sideways(self, "left")
-        elif command == "center":
-            self.none_count = 0
-            move_forward(self)
-        elif command == "none":
-            self.none_count += 1
-            if self.none_count >= NONE_THRESHOLD:
+        if self.bumper:
+            self.bumper = False
+            self.play(Motion.sitDown)
+            self.play(Motion.pickUp)
+            self.play(Motion.standUp)
+            return
+
+        try:
+            data = json.loads(msg.data)
+            command = data["command"]
+            duration = data["duration"]
+
+            # if self.command_count == 3:
+            #     rotate(node=self, clockwise=False, duration=duration)
+            #     self.command_count = 0
+
+            if command == "right":
                 self.none_count = 0
-                # self.nao_pub.play(Motion.pickUp)
-                self.play(Motion.pickUp)
-        else:
-            self.get_logger().warn(f"unknown command: {command}")
+                move_sideways(self, "right", duration=duration)
+            elif command == "left":
+                self.none_count = 0
+                move_sideways(self, "left", duration=duration)
+            elif command == "rotate_right":
+                self.none_count = 0
+                rotate(node=self, clockwise=True, duration=duration)
+            elif command == "rotate_left":
+                self.none_count = 0
+                rotate(node=self, clockwise=False, duration=duration)
+            elif command == "forward":
+                self.none_count = 0
+                move_forward(self, duration=duration)
+            elif command == "none":
+                self.none_count += 1
+                if self.none_count >= NONE_THRESHOLD:
+                    self.none_count = 0
+                    # self.nao_pub.play(Motion.pickUp)
+                    self.play(Motion.pickUp)
+            else:
+                self.get_logger().warn(f"unknown command: {command}")
+
+            self.command_count = self.command_count + 1
+
+        except (json.JSONDecodeError, KeyError) as e:
+            self.get_logger().error(f"Failed to parse command message: {e}")
+            return
 
 
 def main(args=None):

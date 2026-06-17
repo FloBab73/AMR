@@ -40,7 +40,7 @@ def rotate(
     node: Node,
     clockwise: bool = True,
     speed: float = 0.5,
-    duration: float = 2.0,
+    duration: float = 0.6,
 ):
     """
     Rotate the robot on the spot for `duration` seconds.
