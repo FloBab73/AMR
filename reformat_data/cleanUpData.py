@@ -41,8 +41,8 @@ def clean_up(lines):
 
 
 def main():
-    in_path = sys.argv[1] if len(sys.argv) > 1 else "pickUpMotionRecored.md"
-    out_path = sys.argv[2] if len(sys.argv) > 2 else "pickUpMotionCleaned.md"
+    in_path = sys.argv[1] if len(sys.argv) > 1 else "output.txt"
+    out_path = sys.argv[2] if len(sys.argv) > 2 else "cleanedOuptut.txt"
 
     with open(in_path, "r") as f:
         lines = f.readlines()
