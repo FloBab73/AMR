@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from model import detect_and_segment
+from model import detect_and_segment, get_top_edge_angle_from_mask
 from datetime import datetime
 from PIL import Image
 
@@ -40,19 +40,24 @@ def main():
         try:
             image = Image.open(get_image_path(i)).convert("RGB")
         except:
-            print("Image not found, skipping")
+            # print("Image not found, skipping")
             continue
         
         result = detect_and_segment(image, sehr_explizit)
 
         if result:
+            angle = get_top_edge_angle_from_mask(result["mask"])
+            print(f"angle: {angle}")
             box = result["box"] 
             print(f"{i} | {datetime.now()} | {box}")
-            draw_result_on_image(image, result)
+            draw_result_on_image(image, result, i)
             found.append(i)
         else:
-            print(f"{i} | {datetime.now()} | Not found")
+            # print(f"{i} | {datetime.now()} | Not found")
             not_found.append(i)
 
     print(f"found {len(found)} of {len(found) + len (not_found)}")
     print(f"not found: {not_found}")
+
+if __name__ == "__main__":
+    main()

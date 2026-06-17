@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import rclpy
 from PIL import Image as PILImage
@@ -48,24 +49,32 @@ class ImageProcessor(Node):
 
         image_width = frame.shape[1]
         target = result["mean"]["x"]
+        box_width = result["box_width"]
+        angle = result["angle"]
 
-        if target > image_width * (0.5 + SIDEWAYS_MOTION_TOLERANCE):
-            self.publish_command("right")
+        if angle > 10:
+            self.publish_command("rotate_right", angle, 1)
+            draw_result_on_image(pil_image, result, "rotate_right")
+        elif angle < -10:
+            self.publish_command("rotate_left", -angle, 1)
+            draw_result_on_image(pil_image, result, "rotate_left")
+        elif target > image_width * (0.5 + SIDEWAYS_MOTION_TOLERANCE):
+            self.publish_command("right", 2)
             draw_result_on_image(pil_image, result, "right")
         elif target < image_width * (0.5 - SIDEWAYS_MOTION_TOLERANCE):
-            self.publish_command("left")
+            self.publish_command("left", 2)
             draw_result_on_image(pil_image, result, "left")
-        elif result["box_width"] < image_width * FAR_WIDTH_TOLERANCE and (target < image_width * (0.5 - FAR_SIDEWAYS_MOTION_TOLERANCE) or target > image_width * (0.5 + FAR_SIDEWAYS_MOTION_TOLERANCE)):
-            self.publish_command("forward")
-            draw_result_on_image(pil_image, result, "center")
+        elif box_width < image_width * FAR_WIDTH_TOLERANCE and (target < image_width * (0.5 - FAR_SIDEWAYS_MOTION_TOLERANCE) or target > image_width * (0.5 + FAR_SIDEWAYS_MOTION_TOLERANCE)):
+            self.publish_command("forward", 4)
+            draw_result_on_image(pil_image, result, "forward")
         else:
-            self.publish_command("center")
+            self.publish_command("center", 2)
             draw_result_on_image(pil_image, result, "center")
 
-    def publish_command(self, command: str):
-        print(command)
-        self.command_pub.publish(String(data=command))
-        self.get_logger().info(f"command: {command}")
+    def publish_command(self, command: str, value: float = None):
+        payload = {"command": command, "value": value}
+        self.command_pub.publish(String(data=json.dumps(payload)))
+        self.get_logger().info(f"command: {command}, value: {value}")
 
 
 def main(args=None):
