@@ -34,3 +34,24 @@ def move_sideways(
     time.sleep(duration)
     pub.publish(Twist())  # stop
     time.sleep(1.0)
+
+
+def rotate(
+    node: Node,
+    clockwise: bool = True,
+    speed: float = 0.5,
+    duration: float = 2.0,
+):
+    """
+    Rotate the robot on the spot for `duration` seconds.
+
+    clockwise : True to turn clockwise, False for counter-clockwise
+    speed     : angular magnitude in rad/s
+    """
+    pub = node.create_publisher(Twist, "/cmd_vel", 10)
+    msg = Twist()
+    msg.angular.z = -speed if clockwise else speed
+    pub.publish(msg)
+    time.sleep(duration)
+    pub.publish(Twist())  # stop
+    time.sleep(1.0)

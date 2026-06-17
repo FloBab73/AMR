@@ -5,12 +5,12 @@ import time
 from enum import Enum
 
 import rclpy
-from bumperSubscriber import BumperListener
-from naoqi_bridge_msgs.msg import JointAnglesWithSpeed
+from naoqi_bridge_msgs.msg import Bumper, JointAnglesWithSpeed
 from rclpy.node import Node
 from std_msgs.msg import String
 from stepToTheSide import move_forward, move_sideways
 
+BUMPER_TOPIC = "/bumper"
 COMMAND_TOPIC = "/KI_Node/command"
 NONE_THRESHOLD = 3
 MIN_DURATION = 0.05  # minimum seconds to dwell on each keyframe
@@ -205,7 +205,12 @@ class MotionControl(Node):
         else:
             self.get_logger().info("Bridge connected.")
 
-        BumperListener(on_pressed=self.on_bumper_press)
+        self.current_value: Bumper | None = None
+        self.on_pressed = self.on_bumper_press
+        self.bumper_sub = self.create_subscription(
+            Bumper, BUMPER_TOPIC, self.on_bumper_press, 10
+        )
+        self.get_logger().info(f"Listening for bumper events on '{BUMPER_TOPIC}'.")
 
     def on_bumper_press(self, msg):
         print(f"Bumper {msg.bumper} was pressed in motion control")
