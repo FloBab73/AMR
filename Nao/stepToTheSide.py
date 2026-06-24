@@ -3,6 +3,8 @@ import time
 from geometry_msgs.msg import Twist
 from rclpy.node import Node
 
+SLEEP_DURATION = 0.3
+
 
 def move_forward(node: Node, speed: float = 0.1, duration: float = 2.0):
     """Move the robot forward at `speed` m/s for `duration` seconds."""
@@ -12,7 +14,7 @@ def move_forward(node: Node, speed: float = 0.1, duration: float = 2.0):
     publisher.publish(msg)
     time.sleep(duration)
     publisher.publish(Twist())  # stop
-    time.sleep(1.0)
+    time.sleep(SLEEP_DURATION)
 
 
 def move_sideways(
@@ -33,7 +35,7 @@ def move_sideways(
     pub.publish(msg)
     time.sleep(duration)
     pub.publish(Twist())  # stop
-    time.sleep(1.0)
+    time.sleep(SLEEP_DURATION)
 
 
 def rotate(
@@ -54,4 +56,4 @@ def rotate(
     pub.publish(msg)
     time.sleep(duration)
     pub.publish(Twist())  # stop
-    time.sleep(1.0)
+    time.sleep(SLEEP_DURATION)

@@ -108,23 +108,3 @@ def write_motion_file(filepath: str, frames: list[list[float]]) -> None:
     text = '\n\n'.join(frame_to_text(f) for f in frames) + '\n'
     with open(filepath, 'w') as f:
         f.write(text)
-
-
-# ---------------------------------------------------------------------------
-# Edit these two poses, then run the script. Both are lists of 26 joint angles
-# in the JOINT_NAMES order above. The values below are placeholders (all zero
-# for start, a small example for end) — replace them with your real poses.
-# ---------------------------------------------------------------------------
-
-START_POSITION = [0.0] * len(JOINT_NAMES)
-END_POSITION = [0.0] * len(JOINT_NAMES)
-
-
-def main():
-    frames = generate_motion(START_POSITION, END_POSITION, NUM_FRAMES)
-    write_motion_file(OUTPUT_FILE, frames)
-    print(f"Done. Wrote {len(frames)} frames to {OUTPUT_FILE}.")
-
-
-if __name__ == '__main__':
-    main()

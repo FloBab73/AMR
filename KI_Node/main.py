@@ -1,4 +1,5 @@
 import json
+import time
 
 import numpy as np
 import rclpy
@@ -10,10 +11,11 @@ from std_msgs.msg import String
 from image_processing import draw_result_on_image
 from model import detect_and_segment
 
-PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm"
-SIDEWAYS_MOTION_TOLERANCE = 0.2
+PROMPT = "Ein Tafelschwamm steht auf einer Oberfläche, suche den Tafelschwamm. Gib lieber kein Ergebnis zurück, wenn du den Tafelschwamm nicht findest."
+SIDEWAYS_MOTION_TOLERANCE = 0.14
 FAR_SIDEWAYS_MOTION_TOLERANCE = 0.4
-FAR_WIDTH_TOLERANCE = 0.3
+FAR_WIDTH_TOLERANCE = 0.26
+ROTATE_ANGLE_TOLERANCE = 8
 
 IMAGE_TOPIC = "/camera/bottom/image_republished"
 COMMAND_TOPIC = "/KI_Node/command"
@@ -44,17 +46,20 @@ class ImageProcessor(Node):
         result = detect_and_segment(pil_image, PROMPT)
         if not result:
             self.publish_command("none")
+            draw_result_on_image(pil_image, result, "none")
             return
 
         image_width = frame.shape[1]
         target = result["mean"]["x"]
         box_width = result["box_width"]
         angle = result["angle"]
-
-        if angle > 10:
+        print(
+            f"box_width={box_width}, image_width={image_width}, angle={angle}, target={target}"
+        )
+        if angle > ROTATE_ANGLE_TOLERANCE:
             self.publish_command("rotate_right", 1)
             draw_result_on_image(pil_image, result, "rotate_right")
-        elif angle < -10:
+        elif angle < -ROTATE_ANGLE_TOLERANCE:
             self.publish_command("rotate_left", 1)
             draw_result_on_image(pil_image, result, "rotate_left")
         elif target > image_width * (0.5 + SIDEWAYS_MOTION_TOLERANCE):
@@ -63,10 +68,8 @@ class ImageProcessor(Node):
         elif target < image_width * (0.5 - SIDEWAYS_MOTION_TOLERANCE):
             self.publish_command("left", 2)
             draw_result_on_image(pil_image, result, "left")
-        elif box_width < image_width * FAR_WIDTH_TOLERANCE and (
-            target < image_width * (0.5 - FAR_SIDEWAYS_MOTION_TOLERANCE)
-            or target > image_width * (0.5 + FAR_SIDEWAYS_MOTION_TOLERANCE)
-        ):
+        # elif box_width < image_width * FAR_WIDTH_TOLERANCE:
+        elif box_width < image_width * FAR_WIDTH_TOLERANCE:
             self.publish_command("forward", 4)
             draw_result_on_image(pil_image, result, "forward")
         else:
@@ -74,7 +77,7 @@ class ImageProcessor(Node):
             draw_result_on_image(pil_image, result, "center")
 
     def publish_command(self, command: str, value: float = None):
-        payload = {"command": command, "duration": value}
+        payload = {"command": command, "duration": value, "timestamp": time.time()}
         self.command_pub.publish(String(data=json.dumps(payload)))
         self.get_logger().info(f"command: {command}, duration: {value}")
 

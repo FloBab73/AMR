@@ -8,6 +8,8 @@ from enum import Enum
 import rclpy
 from naoqi_bridge_msgs.msg import Bumper, JointAnglesWithSpeed
 from rclpy.node import Node
+from resetToStanding import reset_to_standing
+from sensor_msgs.msg import JointState
 from std_msgs.msg import String
 from stepToTheSide import move_forward, move_sideways, rotate
 
@@ -15,6 +17,7 @@ BUMPER_TOPIC = "/bumper"
 COMMAND_TOPIC = "/KI_Node/command"
 NONE_THRESHOLD = 3
 MIN_DURATION = 0.05  # minimum seconds to dwell on each keyframe
+MAX_COMMAND_AGE = 2.0  # seconds — skip commands queued while a motion was running
 
 
 class Motion(Enum):
@@ -23,6 +26,7 @@ class Motion(Enum):
     sitDown = "./motionFiles/sitDownMotion.md"
     standUp = "./motionFiles/standUpMotion.md"
     pickUp = "./motionFiles/pickUpMotion.md"
+    reset = "./motionFiles/resetMotion.md"
 
     @property
     def path(self) -> str:
@@ -170,6 +174,10 @@ class MotionControl(Node):
         self.get_logger().info(f"Loaded {len(poses)} poses for '{motion.name}'.")
         self._play_poses(poses)
 
+    def on_joint_state(self, msg: JointState):
+        """Cache the most recent joint state for reset_to_standing()."""
+        self.latest_joint_state = msg
+
     def __init__(self, pose_speed: float = 0.15, motion_speed: float = 0.2):
         super().__init__("motion_control")
         self.none_count = 0
@@ -214,7 +222,14 @@ class MotionControl(Node):
         )
         self.get_logger().info(f"Listening for bumper events on '{BUMPER_TOPIC}'.")
 
-        move_forward(self)
+        # Cache the latest /joint_states so reset_to_standing() can capture the
+        # robot's current pose without nested spinning.
+        self.latest_joint_state: JointState | None = None
+        self.joint_state_sub = self.create_subscription(
+            JointState, "/joint_states", self.on_joint_state, 10
+        )
+
+        # move_forward(self)
         # self.play(Motion.sitDown)
 
     def on_bumper_press(self, msg):
@@ -222,16 +237,29 @@ class MotionControl(Node):
         self.bumper = True
 
     def on_command(self, msg: String):
+        try:
+            data = json.loads(msg.data)
+        except json.JSONDecodeError as e:
+            self.get_logger().error(f"Failed to parse command message: {e}")
+            return
+
+        timestamp = data.get("timestamp")
+        if timestamp is not None and (time.time() - timestamp) > MAX_COMMAND_AGE:
+            self.get_logger().info(
+                f"Skipping stale '{data.get('command')}' command "
+                f"(age={time.time() - timestamp:.2f}s)"
+            )
+            return
 
         if self.bumper:
-            self.bumper = False
+            reset_to_standing(self)
             self.play(Motion.sitDown)
             self.play(Motion.pickUp)
             self.play(Motion.standUp)
+            self.bumper = False
             return
 
         try:
-            data = json.loads(msg.data)
             command = data["command"]
             duration = data["duration"]
 
@@ -254,12 +282,12 @@ class MotionControl(Node):
             elif command == "forward":
                 self.none_count = 0
                 move_forward(self, duration=duration)
-            elif command == "none":
-                self.none_count += 1
-                if self.none_count >= NONE_THRESHOLD:
-                    self.none_count = 0
-                    # self.nao_pub.play(Motion.pickUp)
-                    self.play(Motion.pickUp)
+            # elif command == "none":
+            #     self.none_count += 1
+            #     if self.none_count >= NONE_THRESHOLD:
+            #         self.none_count = 0
+            #         # self.nao_pub.play(Motion.pickUp)
+            #         self.play(Motion.pickUp)
             else:
                 self.get_logger().warn(f"unknown command: {command}")
 
