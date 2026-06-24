@@ -15,7 +15,7 @@ from stepToTheSide import move_forward, move_sideways, rotate
 
 BUMPER_TOPIC = "/bumper"
 COMMAND_TOPIC = "/KI_Node/command"
-NONE_THRESHOLD = 3
+NONE_THRESHOLD = 2
 MIN_DURATION = 0.05  # minimum seconds to dwell on each keyframe
 MAX_COMMAND_AGE = 2.0  # seconds — skip commands queued while a motion was running
 
@@ -27,6 +27,7 @@ class Motion(Enum):
     standUp = "./motionFiles/standUpMotion.md"
     pickUp = "./motionFiles/pickUpMotion.md"
     reset = "./motionFiles/resetMotion.md"
+    lookDown = "./motionFiles/lookDown.md"
 
     @property
     def path(self) -> str:
@@ -282,12 +283,13 @@ class MotionControl(Node):
             elif command == "forward":
                 self.none_count = 0
                 move_forward(self, duration=duration)
-            # elif command == "none":
-            #     self.none_count += 1
-            #     if self.none_count >= NONE_THRESHOLD:
-            #         self.none_count = 0
-            #         # self.nao_pub.play(Motion.pickUp)
-            #         self.play(Motion.pickUp)
+            elif command == "look_down":
+                self.play(Motion.lookDown)
+            elif command == "none":
+                self.none_count += 1
+                if self.none_count >= NONE_THRESHOLD:
+                    self.none_count = 0
+                    move_forward(self, duration=0.8)
             else:
                 self.get_logger().warn(f"unknown command: {command}")
 

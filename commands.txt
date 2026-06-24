@@ -6,6 +6,9 @@ ros2 topic pub --once /speech std_msgs/String "data: Ich fühle mich wie eine ka
 
 ros2 topic pub --once /joint_angles naoqi_bridge_msgs/JointAnglesWithSpeed "{header: {stamp: now, frame_id: ''}, joint_names: ['HeadYaw'], joint_angles: [0.5], speed: 0.1, relative: 0}"
 
+ros2 topic pub --once /joint_angles naoqi_bridge_msgs/JointAnglesWithSpeed "{header: {stamp: now, frame_id: ''}, joint_names: ['HeadPitch'], joint_angles: [0.5], speed: 0.1, relative: 0}"
+
+
 ssh -i ~/.ssh/nao nao@192.168.0.193
 VVRXWnao#11
 
@@ -28,7 +31,7 @@ g = s
 
 ros2 topic pub --once /joint_angles naoqi_bridge_msgs/JointAnglesWithSpeed "{header: {stamp: now, frame_id: ''}, joint_names: ['LShoulderPitch'], joint_angles: [0.5], speed: 0.1, relative: 0}"
 
-./pynaoqi-python2.7-2.8.6.23-linux64-20191127_152327/bin/python2 hello_world.py 
+./pynaoqi-python2.7-2.8.6.23-linux64-20191127_152327/bin/python2 hello_world.py
 
 
 amrss26@A111-11:~/python-nao-project$ ros2 topic info /cmd_vel
@@ -39,6 +42,3 @@ Subscription count: 1
 
 //echo joint states
 ros2 topic echo /joint_states
-
-
-
