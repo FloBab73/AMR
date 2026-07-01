@@ -184,7 +184,8 @@ class MotionControl(Node):
         super().__init__("motion_control")
         self.none_count = 0
         self.command_count = 0
-        self.bumper = False
+        self.bumperRight = False
+        self.bumperLeft = False
         # Single shared publisher node — reused for every motion command.
         # self.nao_pub = NaoCommandPublisher(pose_speed=0.15, motion_speed=0.2)
 
@@ -236,7 +237,10 @@ class MotionControl(Node):
 
     def on_bumper_press(self, msg):
         print(f"Bumper {msg.bumper} was pressed in motion control")
-        self.bumper = True
+        if msg.bumper == 0:
+            self.bumperRight = True
+        else:
+            self.bumperRight = False
 
     def on_command(self, msg: String):
         try:
@@ -255,15 +259,16 @@ class MotionControl(Node):
             )
             return
 
-        if self.bumper:
+        if self.bumperRight or self.bumperLeft:
             reset_to_standing(self)
             self.play(Motion.sitDown)
-            if True:
+            if self.bumperRight:
                 self.play(Motion.pickUpRight)
+                self.bumperRight = False
             else:
                 self.play(Motion.pickUp)
+                self.bumperLeft = False
             self.play(Motion.standUp)
-            self.bumper = False
             return
 
         try:
