@@ -26,6 +26,7 @@ class Motion(Enum):
     sitDown = "./motionFiles/sitDownMotion.md"
     standUp = "./motionFiles/standUpMotion.md"
     pickUp = "./motionFiles/pickUpMotion.md"
+    pickUpRight = "./motionFiles/pickUpMotionRight.md"
     reset = "./motionFiles/resetMotion.md"
     lookDown = "./motionFiles/lookDown.md"
 
@@ -257,7 +258,10 @@ class MotionControl(Node):
         if self.bumper:
             reset_to_standing(self)
             self.play(Motion.sitDown)
-            self.play(Motion.pickUp)
+            if True:
+                self.play(Motion.pickUpRight)
+            else:
+                self.play(Motion.pickUp)
             self.play(Motion.standUp)
             self.bumper = False
             return
