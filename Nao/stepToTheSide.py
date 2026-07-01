@@ -56,4 +56,4 @@ def rotate(
     pub.publish(msg)
     time.sleep(duration)
     pub.publish(Twist())  # stop
-    time.sleep(SLEEP_DURATION)
+    time.sleep(SLEEP_DURATION + 1)

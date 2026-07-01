@@ -22,14 +22,14 @@ class ImageProcessor(Node):
     """Subscribes to the camera image topic, locates the target in each frame
     and publishes a movement command as a String."""
 
-    SIDEWAYS_MOTION_TOLERANCE_LEFT = -0.15
+    SIDEWAYS_MOTION_TOLERANCE_LEFT = 0.05
     SIDEWAYS_MOTION_TOLERANCE_RIGHT = 0.15
     FAR_SIDEWAYS_MOTION_TOLERANCE = 0.4
-    FAR_WIDTH_TOLERANCE = 0.26
-    ROTATE_ANGLE_TOLERANCE = 8
+    FAR_WIDTH_TOLERANCE = 0.2
+    ROTATE_ANGLE_TOLERANCE = 4
     ROTATION_DURATION = 0.7
-    SIDEWAYS_DURATION = 1.5
-    FAR_FORWARD_DURATION = 3
+    SIDEWAYS_DURATION = 2
+    FAR_FORWARD_DURATION = 2
     FORWARD_DURATION = 2
 
     def __init__(self):
@@ -100,28 +100,28 @@ class ImageProcessor(Node):
         else:
             self.none_count += 1
 
-        if self.none_count >= 2:
+        if self.none_count >= 4:
             self.publish_command("look_down")
-            self.SIDEWAYS_MOTION_TOLERANCE_LEFT = -0.2
-            self.SIDEWAYS_MOTION_TOLERANCE_RIGHT = 0.1
+            self.SIDEWAYS_MOTION_TOLERANCE_LEFT = -0.1
+            self.SIDEWAYS_MOTION_TOLERANCE_RIGHT = -0.13
             self.FAR_SIDEWAYS_MOTION_TOLERANCE = 0.4
             self.FAR_WIDTH_TOLERANCE = 0.26
-            self.ROTATE_ANGLE_TOLERANCE = 3
+            self.ROTATE_ANGLE_TOLERANCE = 10
             self.ROTATION_DURATION = 0.7
             self.SIDEWAYS_DURATION = 0.8
             self.FAR_FORWARD_DURATION = 0.8
             self.FORWARD_DURATION = 0.8
             self.none_count = 0
         else:
-            self.SIDEWAYS_MOTION_TOLERANCE_LEFT = -0.15
-            self.SIDEWAYS_MOTION_TOLERANCE_RIGHT = 0.15
-            self.FAR_SIDEWAYS_MOTION_TOLERANCE = 0.4
-            self.FAR_WIDTH_TOLERANCE = 0.26
-            self.ROTATE_ANGLE_TOLERANCE = 8
-            self.ROTATION_DURATION = 0.7
-            self.SIDEWAYS_DURATION = 1.5
-            self.FAR_FORWARD_DURATION = 3
-            self.FORWARD_DURATION = 2
+            # self.SIDEWAYS_MOTION_TOLERANCE_LEFT = -0.15
+            # self.SIDEWAYS_MOTION_TOLERANCE_RIGHT = 0.15
+            # self.FAR_SIDEWAYS_MOTION_TOLERANCE = 0.4
+            # self.FAR_WIDTH_TOLERANCE = 0.26
+            # self.ROTATE_ANGLE_TOLERANCE = 8
+            # self.ROTATION_DURATION = 0.7
+            # self.SIDEWAYS_DURATION = 1.5
+            # self.FAR_FORWARD_DURATION = 3
+            # self.FORWARD_DURATION = 2
             self.publish_command(command, value)
 
 

@@ -17,7 +17,7 @@ BUMPER_TOPIC = "/bumper"
 COMMAND_TOPIC = "/KI_Node/command"
 NONE_THRESHOLD = 2
 MIN_DURATION = 0.05  # minimum seconds to dwell on each keyframe
-MAX_COMMAND_AGE = 2.0  # seconds — skip commands queued while a motion was running
+MAX_COMMAND_AGE = 1.5  # seconds — skip commands queued while a motion was running
 
 
 class Motion(Enum):
@@ -245,9 +245,11 @@ class MotionControl(Node):
             return
 
         timestamp = data.get("timestamp")
+        command_name = data.get("command", "")
+        # is_rotation = command_name in ("rotate_right", "rotate_left")
         if timestamp is not None and (time.time() - timestamp) > MAX_COMMAND_AGE:
             self.get_logger().info(
-                f"Skipping stale '{data.get('command')}' command "
+                f"Skipping stale '{command_name}' command "
                 f"(age={time.time() - timestamp:.2f}s)"
             )
             return
@@ -263,11 +265,7 @@ class MotionControl(Node):
         try:
             command = data["command"]
             duration = data["duration"]
-
-            # if self.command_count == 3:
-            #     rotate(node=self, clockwise=False, duration=duration)
-            #     self.command_count = 0
-
+            print(f"command: {command}, duration: {duration}")
             if command == "right":
                 self.none_count = 0
                 move_sideways(self, "right", duration=duration)
