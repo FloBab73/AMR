@@ -22,8 +22,8 @@ class ImageProcessor(Node):
     """Subscribes to the camera image topic, locates the target in each frame
     and publishes a movement command as a String."""
 
-    SIDEWAYS_MOTION_TOLERANCE_LEFT = 0.05
-    SIDEWAYS_MOTION_TOLERANCE_RIGHT = 0.15
+    SIDEWAYS_MOTION_TOLERANCE_LEFT = 0.03
+    SIDEWAYS_MOTION_TOLERANCE_RIGHT = 0.16
     FAR_SIDEWAYS_MOTION_TOLERANCE = 0.4
     FAR_WIDTH_TOLERANCE = 0.2
     ROTATE_ANGLE_TOLERANCE = 4
@@ -102,8 +102,8 @@ class ImageProcessor(Node):
 
         if self.none_count >= 4:
             self.publish_command("look_down")
-            self.SIDEWAYS_MOTION_TOLERANCE_LEFT = -0.1
-            self.SIDEWAYS_MOTION_TOLERANCE_RIGHT = -0.13
+            self.SIDEWAYS_MOTION_TOLERANCE_LEFT = -0.9
+            self.SIDEWAYS_MOTION_TOLERANCE_RIGHT = -0.14
             self.FAR_SIDEWAYS_MOTION_TOLERANCE = 0.4
             self.FAR_WIDTH_TOLERANCE = 0.26
             self.ROTATE_ANGLE_TOLERANCE = 10

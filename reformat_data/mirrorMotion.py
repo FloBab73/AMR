@@ -141,8 +141,8 @@ def serialise_poses(poses: list[dict]) -> str:
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    default_in = os.path.join(script_dir, "motionFiles", "pickUpMotion.md")
-    default_out = os.path.join(script_dir, "motionFiles", "pickUpMotionRight.md")
+    default_in = os.path.join("/home/amrss26/python-amr-project/AMR/Nao/motionFiles/standUpMotion.md")
+    default_out = os.path.join("/home/amrss26/python-amr-project/AMR/Nao/motionFiles/standUpMotionRight.md")
 
     parser = argparse.ArgumentParser(
         description="Mirror a NAO motion file (L arm ↔ R arm)."
