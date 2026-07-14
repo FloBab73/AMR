@@ -24,8 +24,8 @@
   show-list-of-listings: true,
 
   // ---------- Titel ----------
-  title-de: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod",
-  title-en: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod",
+  title-de: "TODO: Titel der Arbeit",
+  title-en: "TODO: Title of the thesis",
 
   // ---------- Autor:innen  ((Vorname, Nachname, ORCID)) ----------
   authors: (
@@ -43,19 +43,10 @@
 
   // ---------- Abstract ----------
   abstract-de: [
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-    eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-    voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
-    clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-    amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
-    diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-    Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-    sit amet.
+    TODO: Deutsche Kurzfassung.
   ],
   abstract-en: [
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-    eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+    TODO: English abstract.
   ],
 
   // ---------- Optionale Nachschlage-Verzeichnisse ----------
@@ -80,12 +71,12 @@
 )
 
 // ---------- Kapitel (aus dem Ordner /kapitel) ----------
-#include "kapitel/kapitel1.typ"
-#include "kapitel/kapitel2.typ"
-#include "kapitel/kapitel3.typ"
-#include "kapitel/kapitel4.typ"
-#include "kapitel/kapitel5.typ"
-#include "kapitel/kapitel6.typ"
+#include "kapitel/einleitung.typ"
+#include "kapitel/grundlagen.typ"
+#include "kapitel/system-design.typ"
+#include "kapitel/umsetzung.typ"
+#include "kapitel/ergebnisse.typ"
+#include "kapitel/fazit.typ"
 
 // ---------- Anhang ----------
 // Ab hier werden Kapitel mit Buchstaben (A, B, ...) nummeriert.
