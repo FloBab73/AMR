@@ -136,7 +136,7 @@
   IMB: ("Medizinische Informatik", "Medical Informatics", "Bachelor-Thesis", "Bachelor Thesis", "bsc"),
   UIB: ("Unternehmens- und Wirtschaftsinformatik", "Enterprise Computing", "Bachelor-Thesis", "Bachelor Thesis", "bsc"),
   CSB: ("Cyber Security", "Cyber Security", "Bachelor-Thesis", "Bachelor Thesis", "bsc"),
-  IM: ("Informatik", "Computer Science", "Master-Thesis", "Master Thesis", "msc"),
+  IM: ("Autonome Mobile Roboter", "Computer Science", "Projektarbeit", "Master Thesis", "msc"),
   MEB: ("Mechatronik", "Mechatronic", "Bachelor-Thesis", "Bachelor Thesis", "bsc"),
   UB: ("Automatisierungstechnik", "Automation Technology", "Bachelor-Thesis", "Bachelor Thesis", "bsc"),
   ELB: ("Elektro- und Informationstechnik/Ingenieurpädagogik", "Elektro- und Informationstechnik/Ingenieurpädagogik", "Bachelor-Thesis", "Bachelor Thesis", "bsc"),

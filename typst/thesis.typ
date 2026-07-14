@@ -19,9 +19,9 @@
 
   // ---------- Verzeichnisse ----------
   show-toc: true,
-  show-list-of-figures: true,
-  show-list-of-tables: true,
-  show-list-of-listings: true,
+  show-list-of-figures: false,
+  show-list-of-tables: false,
+  show-list-of-listings: false,
 
   // ---------- Titel ----------
   title-de: "TODO: Titel der Arbeit",
@@ -29,8 +29,9 @@
 
   // ---------- Autor:innen  ((Vorname, Nachname, ORCID)) ----------
   authors: (
-    ("Max", "Musterman", "0009-0009-7381-894X"),
-    ("Erika", "Musterman", none),
+    ("Florian", "Babel", "0009-0004-8006-7762"),
+    ("Johannes", "Pielmeier", none),
+    ("Jaro", "Pracht", none),
   ),
 
   // ---------- Weitere Angaben ----------
