@@ -15,7 +15,7 @@
   language: "de", // "de" fuer Deutsch, "en" fuer Englisch
   submission: "digital", // "digital" (einseitig, zentriert) oder "papier" (zweiseitig, Fenster)
   license: "opensource", // opensource | hs | stud | vertraulich
-  gender: true, // Genderhinweis anzeigen (nur Deutsch)
+  gender: false, // Genderhinweis anzeigen (nur Deutsch)
 
   // ---------- Verzeichnisse ----------
   show-toc: true,
@@ -53,18 +53,13 @@
   // ---------- Optionale Nachschlage-Verzeichnisse ----------
   // Auf `none` setzen, um sie auszublenden.
   acronym-entries: (
-    ("HTML", "Hypertext Markup Language"),
-    ("PDF", "Portable Document Format"),
-    ("THMA", "Technische Hochschule Mannheim"),
+    none
   ),
   glossary-entries: (
-    ("Kopplung", "Grad der Abhängigkeit zwischen zwei Komponenten."),
-    ("Rover", "Ein mobiles Erkundungsfahrzeug."),
+    none
   ),
   symbol-entries: (
-    ($a$, "Beschleunigung", $upright("m")/upright("s")^2$),
-    ($F$, "Kraft", $upright("N")$),
-    ($rho$, "Dichte", $upright("kg")/upright("m")^3$),
+    none
   ),
 
   // ---------- Literatur ----------
