@@ -1,7 +1,7 @@
 **/__pycache__/
 **/out
 
-typst/thesis.pdf
+/typst/**/*.pdf
 
 .claude
 
