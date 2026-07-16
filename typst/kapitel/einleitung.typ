@@ -15,11 +15,11 @@ klassischen Radrobotern über deutlich eingeschränktere Rechenressourcen,
 komplexere Kinematik und eine geringere Stabilität beim Laufen verfügen.
 
 Im Rahmen des Moduls Autonome Mobile Roboter wurde ein Projekt durchgeführt, dessen Ziel es war, dem Nao-Roboter eine
-möglichst autonome Aufgabe zu ermöglichen: das Erkennen eines definierten
-Objekts, das eigenständige Hinlaufen zu diesem Objekt, das Aufheben sowie der
-Rücktransport an die Ausgangsposition. Die zentrale Problemstellung lag dabei
+möglichst autonome Aufgabe zu ermöglichen. Der Roboter sollte ein definiertes
+Objekt erkennen, eigenständig zu diesem hinlaufen, es aufheben und
+an die Ausgangsposition zurücktransportieren. Die zentrale Problemstellung lag dabei
 weniger in der Entwicklung einzelner Komponenten als in deren Integration zu
-einem robusten Gesamtsystem: Wie lässt sich eine moderne, promptbasierte
+einem robusten Gesamtsystem. Wie lässt sich eine moderne, promptbasierte
 Bilderkennung mit den stark limitierten Bewegungsfähigkeiten und der
 veralteten Softwarearchitektur des Nao so verbinden, dass eine zuverlässige
 autonome Objektsuche und -manipulation entsteht?

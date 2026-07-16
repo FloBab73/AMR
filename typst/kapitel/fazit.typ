@@ -30,7 +30,7 @@ Erkennung beliebiger, unbekannter Objekte.
 Auch die aktuell rein reaktive Bewegungssteuerung, bei der aus jedem
 einzelnen Bild ein diskretes Korrekturkommando abgeleitet wird, bietet
 Verbesserungspotenzial. Anstelle dessen könnte ein planerischer Ansatz
-verfolgt werden: Aus einer anfänglichen Objekterkennung wird einmalig eine
+verfolgt werden. Aus einer anfänglichen Objekterkennung wird einmalig eine
 geschätzte Zielposition relativ zum Roboter (Distanz und Winkel) berechnet,
 etwa anhand der bekannten Objektgröße im Verhältnis zur Bounding-Box-Breite.
 Auf dieser Grundlage könnte eine Trajektorie zum Ziel geplant und
@@ -42,7 +42,7 @@ neu suchen, sondern gezielt auf eine bekannte Koordinate zulaufen könnte.
 Da die Distanz- und Winkelschätzung aus einem einzelnen RGB-Bild ohne
 Tiefeninformation fehlerbehaftet ist und mit zunehmender Entfernung
 ungenauer wird, wäre eine vollständig planbasierte Lösung ohne jede
-visuelle Nachkorrektur nicht robust genug; die Kombination aus grober
+visuelle Nachkorrektur nicht robust genug. Die Kombination aus grober
 Pfadplanung und gelegentlicher Nachkorrektur stellt daher den
 praktikableren Mittelweg dar.
 
@@ -51,7 +51,7 @@ Für die in Kapitel 5.2 genannten Probleme bei den selbst programmierten
 Bewegungssequenzen böte sich eine inverse-kinematik-basierte Ansteuerung
 an, bei der lediglich die gewünschte Endeffektorposition vorgegeben und die
 zugehörige, glatt interpolierte Gelenktrajektorie automatisch berechnet
-wird – etwa über die kartesische Steuerung von NAOqi oder ein
+wird, etwa über die kartesische Steuerung von NAOqi oder ein
 ROS2-Bewegungsplanungs-Framework wie MoveIt2. Dies würde sowohl das
 stockende Bewegungsbild und das damit verbundene Sturzrisiko reduzieren als
 auch eine flexiblere, an die tatsächlich erkannte Objektposition angepasste

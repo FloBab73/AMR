@@ -1,0 +1,22 @@
+{
+  "layout": "elk",
+  "htmlLabels": false,
+  "themeVariables": {
+    "fontFamily": "Helvetica, sans-serif",
+    "clusterBkg": "#ffffff",
+    "clusterBorder": "#999999",
+    "lineColor": "#333333",
+    "textColor": "#000000",
+    "titleColor": "#000000",
+    "nodeTextColor": "#000000",
+    "edgeLabelBackground": "#ffffff",
+    "tertiaryTextColor": "#000000"
+  },
+  "flowchart": {
+    "htmlLabels": false,
+    "useMaxWidth": false,
+    "nodeSpacing": 30,
+    "rankSpacing": 60,
+    "padding": 8
+  }
+}

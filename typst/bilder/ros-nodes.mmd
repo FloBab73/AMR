@@ -1,0 +1,21 @@
+%% ROS-2-Nodes und Topics des Gesamtsystems.
+%% Quelle fuer bilder/ros-nodes.svg — nach Aenderungen neu rendern:
+%%   npx -y @mermaid-js/mermaid-cli -i bilder/ros-nodes.mmd -o bilder/ros-nodes.svg
+flowchart TB
+    driver(["naoqi_driver"])
+    camera(["nao_camera_collector"])
+    ki(["KI_Node"])
+    motion(["motion_control"])
+
+    driver -- "/camera/bottom/image_raw<br/>sensor_msgs/Image" --> camera
+    camera -- "/camera/bottom/image_republished<br/>sensor_msgs/Image" --> ki
+    ki -- "/KI_Node/command<br/>std_msgs/String (JSON)" --> motion
+
+    driver -- "/bumper<br/>naoqi_bridge_msgs/Bumper" --> motion
+    driver -- "/joint_states<br/>sensor_msgs/JointState" --> motion
+
+    motion -- "/cmd_vel<br/>geometry_msgs/Twist" --> driver
+    motion -- "/joint_angles<br/>naoqi_bridge_msgs/JointAnglesWithSpeed" --> driver
+
+    classDef node fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000;
+    class driver,camera,ki,motion node;

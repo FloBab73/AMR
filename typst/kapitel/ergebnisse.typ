@@ -11,7 +11,7 @@
 Trotz der grundsätzlich funktionierenden Gesamtpipeline zeigten sich mehrere
 Einschränkungen, die eine durchgängig zuverlässige Ausführung der Aufgabe
 erschwerten. Ein zentrales Problem war die Zuverlässigkeit der
-Schwammerkennung: Je nach Lichtverhältnissen variierte die Erkennungsqualität
+Schwammerkennung. Je nach Lichtverhältnissen variierte die Erkennungsqualität
 merklich, sodass ein vollständig fehlerfreier Durchlauf schwer zu erreichen
 war. Unabhängig von den Lichtbedingungen deutet die Erkennungsleistung
 insgesamt darauf hin, dass das promptgesteuerte Open-Vocabulary-Modell an
@@ -19,20 +19,20 @@ seine Grenzen stößt und ein auf das Zielobjekt trainiertes, klassenbasiertes
 Modell voraussichtlich robustere und konsistentere Ergebnisse geliefert
 hätte, allerdings auf Kosten der Flexibilität und des Trainingsaufwands.
 Erschwerend kommt hinzu, dass ein Tafelschwamm als Objekt kaum ausgeprägte,
-charakteristische Merkmale besitzt – er verfügt weder über eine markante
+charakteristische Merkmale besitzt. Er verfügt weder über eine markante
 Form noch über Textur- oder Strukturdetails, anhand derer er sich eindeutig
 von anderen Objekten oder dem Hintergrund abgrenzen lässt. Diese
 Merkmalsarmut dürfte die promptbasierte Erkennung zusätzlich erschwert
 haben.
 
 Auch die Bewegungssteuerung des Roboters unterlag deutlichen Einschränkungen.
-Insbesondere die selbst programmierten Bewegungssequenzen – das Hinsetzen und
-das Greifen – wirkten stockend und wenig fließend, da sie nicht durch eine
+Insbesondere die selbst programmierten Bewegungssequenzen für das Hinsetzen und
+das Greifen wirkten stockend und wenig fließend, da sie nicht durch eine
 natürliche Interpolation zwischen den Gelenkstellungen, sondern aus einzeln
 angefahrenen Zwischenpositionen zusammengesetzt waren. Dies erhöhte das
 Risiko eines Umfallens während der Bewegungsausführung. Beim Greifen selbst
 bestand zudem keine Flexibilität hinsichtlich der genauen Position des
-Schwamms: Die Greifbewegung war auf eine feste relative Position ausgelegt
+Schwamms. Die Greifbewegung war auf eine feste relative Position ausgelegt
 und konnte sich nicht dynamisch an leicht abweichende Objektlagen anpassen.
 
 Ein weiteres, laufbedingtes Problem ergab sich aus dem grundlegenden

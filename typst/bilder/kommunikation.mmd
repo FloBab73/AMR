@@ -1,0 +1,60 @@
+%% Gesamtbild der Kommunikation: Laptop, naoqi_driver und Nao.
+%% Quelle fuer bilder/kommunikation.svg — nach Aenderungen neu rendern (aus typst/):
+%%   npx -y @mermaid-js/mermaid-cli -i bilder/kommunikation.mmd \
+%%     -o bilder/kommunikation.svg -b transparent -c bilder/mermaid.json
+%% Schlaegt der Start von Chromium fehl ("No usable sandbox"), zusaetzlich eine
+%% Puppeteer-Config mit {"args": ["--no-sandbox"]} per -p uebergeben.
+%% Bewusste Entscheidungen (eine leere %%-Zeile bricht den Parser, daher keine):
+%% - Die drei eigenen ROS-Nodes sind zu einem Block zusammengefasst, ihre Topics
+%%   zeigt bereits das Nodes-Diagramm (Abb. 3.1).
+%% - Pro Kanal genau eine Kante ueber die Netzwerkgrenze, gebuendelt ueber den
+%%   NAOqi-Broker. Das entspricht dem realen Zugriffsweg (Port 9559) und
+%%   vermeidet mehrere gleich beschriftete Pfeile.
+%% - Layout "elk" (in bilder/mermaid.json) ist noetig: der Standard-Layouter dagre
+%%   zeichnet Kanten ueber Subgraph-Grenzen ab dem Cluster-Rand statt ab dem Node,
+%%   dann scheint der Laptop als Ganzes mit dem Nao zu sprechen.
+%% - htmlLabels muss false bleiben, sonst enthaelt das SVG foreignObject-Elemente,
+%%   die Typst nicht zuverlaessig rendert.
+%% - Mermaid bricht Beschriftungen hart nach ca. 25 Zeichen um, auch mitten im
+%%   Wort, und ignoriert wrappingWidth. Zeilen kurz halten bzw. <br/> setzen.
+%% - Prozesse als abgerundetes Rechteck ("..."), nicht als Stadium (["..."]).
+%%   Bei elk beginnt jede Kante, die an einem Stadium startet, 0,5 px schraeg
+%%   versetzt zum Knotenrand. Mermaid rundet diesen 0,7-px-Stummel wie eine Ecke
+%%   ab und setzt die Pfeilspitze dadurch um 45 Grad verdreht in den Knoten
+%%   hinein — sichtbar bei driver <--> broker, weil nur dort eine Spitze am
+%%   Kantenstart sitzt.
+flowchart TB
+    subgraph laptop["Laptop (Ubuntu, GPU)"]
+        direction TB
+        nodes["ROS-2-Nodes (Abb. 3.1)<br/>nao_camera_collector<br/>KI_Node<br/>motion_control"]
+        driver("naoqi_driver")
+        tools["wakup.py / shutdown.py<br/>(Python 2.7, NAOqi-SDK)"]
+        ssh["SSH-Client"]
+    end
+
+    subgraph nao["Nao (NAOqi OS)"]
+        direction TB
+        broker("NAOqi-Broker")
+        video("ALVideoDevice")
+        memory("ALMemory")
+        almotion("ALMotion")
+        tts("ALTextToSpeech")
+        life("ALAutonomousLife")
+        qicli["qicli"]
+    end
+
+    nodes <-- "ROS 2 (DDS)" --> driver
+
+    driver <-- "NAOqi" --> broker
+    tools -- "NAOqi (ALProxy)" --> broker
+    ssh -- "SSH" --> qicli
+
+    broker --- video
+    broker --- memory
+    broker --- almotion
+    broker --- tts
+    broker --- life
+    qicli --> life
+
+    classDef proc fill:#ffffff,stroke:#333333,stroke-width:1.5px,color:#000000;
+    class nodes,driver,tools,ssh,broker,video,memory,almotion,tts,life,qicli proc;

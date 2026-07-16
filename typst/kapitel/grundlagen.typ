@@ -28,14 +28,14 @@ Foundation Models basieren. Diese Modelle koppeln Bild- und
 Textrepräsentationen und erlauben es, Objekte anhand einer natürlichsprachlichen
 Beschreibung zu lokalisieren, ohne dass eine klassenspezifische
 Trainingsphase erforderlich ist. Ergänzend existieren Segmentierungsmodelle,
-die – ausgehend von groben Lokalisierungen wie Bounding Boxes – präzise
+die ausgehend von groben Lokalisierungen wie Bounding Boxes präzise
 Objektkonturen extrahieren können. Die Kombination beider Modelltypen
 ermöglicht eine flexible, promptgesteuerte Objekterkennung mit
 anschließender pixelgenauer Segmentierung, ohne dass für jedes neue
 Zielobjekt ein eigener Trainingsprozess nötig ist.
 
 Die Wahl zwischen klassentrainierten und promptbasierten Verfahren stellt
-somit einen Trade-off dar: Klassische, trainierte Detektoren bieten in der
+somit einen Trade-off dar. Klassische, trainierte Detektoren bieten in der
 Regel eine höhere Verarbeitungsgeschwindigkeit, benötigen dafür jedoch
 annotierte Trainingsdaten. Promptbasierte Foundation-Model-Ansätze bieten
 hingegen hohe Flexibilität bei neuen Zielobjekten, sind jedoch
