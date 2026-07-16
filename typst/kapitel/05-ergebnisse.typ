@@ -4,6 +4,25 @@
 
 == Finale Ergebnisse
 
+Die entwickelte Pipeline funktioniert in ihrer Gesamtheit. Wird der Roboter
+vor dem Start in den beschriebenen Grundzustand versetzt (also
+`ALAutonomousLife` deaktiviert und die Gelenke über `wakeUp` bestromt),
+läuft das System vollständig über ROS, ohne weitere manuelle Eingriffe
+während der Ausführung. Die Kommunikation zwischen allen Komponenten,
+vom Kamerabild über die Bilderkennung bis zur Bewegungssteuerung, erfolgt
+ausschließlich über ROS-Topics.
+
+Inhaltlich wurden alle zentralen Teilziele erreicht. Der Tafelschwamm
+wird meistens im Kamerabild lokalisiert und der Roboter navigiert
+schrittweise auf ihn zu. Sobald der physische Kontakt über die Fußtaster
+registriert wird, führt der Roboter die Greifsequenz aus und hebt den
+Schwamm auf. Darüber hinaus können grundsätzlich eigene Bewegungssequenzen
+(darunter das Hinsetzen, das Greifen und das Aufstehen) über das
+beschriebene Aufzeichnungsverfahren erstellt und zuverlässig abgespielt
+werden. Die Bildauswertung mittels GroundingDINO und SAM liefert dabei
+aus dem Kamerabild die nötigen Lagemerkmale, um den Roboter korrekt am
+Zielobjekt auszurichten.
+
 == Einschränkungen
 
 // Grenzen des Systems: Objekterkennung, Bewegungsqualität, Laufverhalten.

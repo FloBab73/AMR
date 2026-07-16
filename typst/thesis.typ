@@ -31,7 +31,7 @@
   authors: (
     ("Florian", "Babel", "0009-0004-8006-7762"),
     ("Johannes", "Pielmeier", none),
-    ("Jaro", "Pracht", none),
+    ("Jaronim", "Pracht", "0009-0003-2539-0666"),
   ),
 
   // ---------- Weitere Angaben ----------
@@ -67,12 +67,12 @@
 )
 
 // ---------- Kapitel (aus dem Ordner /kapitel) ----------
-#include "kapitel/einleitung.typ"
-#include "kapitel/grundlagen.typ"
-#include "kapitel/system-design.typ"
-#include "kapitel/umsetzung.typ"
-#include "kapitel/ergebnisse.typ"
-#include "kapitel/fazit.typ"
+#include "kapitel/01-einleitung.typ"
+#include "kapitel/02-grundlagen.typ"
+#include "kapitel/03-system-design.typ"
+#include "kapitel/04-umsetzung.typ"
+#include "kapitel/05-ergebnisse.typ"
+#include "kapitel/06-fazit.typ"
 
 // ---------- Anhang ----------
 // Ab hier werden Kapitel mit Buchstaben (A, B, ...) nummeriert.

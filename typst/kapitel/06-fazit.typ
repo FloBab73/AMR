@@ -4,6 +4,29 @@
 
 == Zusammenfassung
 
+Im Rahmen des Projekts wurde ein Prototyp entwickelt, der es dem NAO-Roboter
+ermöglicht, einen Tafelschwamm selbstständig zu finden, anzulaufen und
+aufzuheben. Als Integrationsplattform diente ROS~2, über das Bilderkennung,
+Bewegungssteuerung und die Anbindung an den Roboter als entkoppelte Nodes
+realisiert wurden. Die Objekterkennung kombiniert GroundingDINO zur
+promptbasierten Lokalisierung mit SAM zur pixelgenauen Segmentierung und
+ermöglicht so eine flexible Erkennung ohne objektspezifisches Training.
+Eigene Bewegungssequenzen wurden durch Aufzeichnung manuell angeführter
+Posen erstellt und über die Gelenkschnittstelle des `naoqi_driver`
+abgespielt. Das Gesamtsystem durchläuft die Aufgabe, von der ersten
+Bilderkennung bis zum aufgehobenen Schwamm, vollständig autonom und
+ohne manuelle Eingriffe während der Ausführung.
+
+Ein zentrales Ergebnis des Projekts ist die praktische Erfahrung mit den
+Grenzen der NAO-ROS-Integration. Der `naoqi_driver` deckt nur einen Teil
+der NAOqi-API ab, sodass ergänzende Direktaufrufe unumgänglich waren.
+Die Inkompatibilität zwischen dem Python-2-basierten NAOqi-SDK und der
+Python-3-Umgebung der KI-Node machte eine eigene Konvertierungsschicht
+für den Kameradatenstrom notwendig. Diese Einschränkungen sind weniger
+als Fehler des gewählten Ansatzes zu verstehen, sondern als
+charakteristische Eigenheit der Plattform, die bei jeder ROS-basierten
+NAO-Anwendung berücksichtigt werden muss.
+
 == Future Work
 
 // Mögliche Weiterentwicklungen: Objekterkennung, Bewegungssteuerung.

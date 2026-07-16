@@ -4,6 +4,35 @@
 
 == Camera Node
 
+Das NAOqi-SDK, auf das der `naoqi_driver` intern angewiesen ist, setzt
+Python~2 voraus. Die KI-Node hingegen benötigt Python~3, da PyTorch und
+die CUDA-Anbindung ausschließlich dort verfügbar sind. Eine direkte
+Verarbeitung der Kamerabilder innerhalb derselben Umgebung ist daher nicht
+möglich. Die Bilder müssen zunächst in ein Format überführt werden, das
+ohne NAOqi-Abhängigkeiten auskommt.
+
+Die Camera Node löst dieses Problem als einfache Zwischenschicht. Sie
+abonniert das Rohbild des `naoqi_driver`, dekodiert es über `CvBridge` in
+ein OpenCV-kompatibles BGR8-Array und verpackt es anschließend als
+standardäßige `sensor_msgs/Image`-Nachricht neu. Das resultierende
+Ausgabe-Topic ist damit frei von NAOqi-Abhängigkeiten und kann von der
+KI-Node mit gängigen Bibliotheken konsumiert werden.
+
+#listing(
+  caption: [Bildkonvertierung in der Camera Node],
+  ```python
+  self.camera_sub = self.create_subscription(
+      Image, '/camera/bottom/image_raw', self.get_camera_data, 10)
+  self.camera_pub = self.create_publisher(
+      Image, '/camera/bottom/image_republished', 10)
+
+  def get_camera_data(self, msg):
+      frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+      out_msg = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
+      self.camera_pub.publish(out_msg)
+  ```,
+)
+
 == KI Node <ki_node>
 
 // Details zur Bilderkennung: Objekterkennung + Segmentierung, Ableitung von

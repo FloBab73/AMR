@@ -42,6 +42,35 @@ Roboters bestimmt wird.
 
 == Betriebssystem-Setup
 
+Die Wahl des Betriebssystems ergibt sich aus zwei unabhängigen Anforderungen,
+die sich gegenseitig einschränken. Einerseits benötigt der `naoqi_driver2`
+eine konkrete ROS-2-Distribution, für die das Paket und seine
+Abhängigkeiten offiziell veröffentlicht sind. Andererseits erfordert die
+KI-gestützte Bilderkennung mit GroundingDINO und SAM eine NVIDIA-GPU mit
+CUDA-Unterstützung und damit aktuelle Grafikkartentreiber. Beide
+Anforderungen lassen sich auf einer gemeinsamen Basis erfüllen.
+
+Der `naoqi_driver2` unterstützt offiziell ausschließlich ROS~Humble und
+ROS~Iron, die beide auf *Ubuntu~22.04~LTS* aufbauen @naoqi_driver2024.
+Neuere Distributionen wie ROS~Jazzy zielen auf Ubuntu~24.04 und werden
+vom Treiber nicht unterstützt, weil die vorgelagerten Abhängigkeiten
+(`naoqi_libqi` und `naoqi_bridge_msgs`) für diese Distributionen nicht
+veröffentlicht wurden und die Portierung bislang aussteht.
+Da ROS~Iron bereits das Ende seines Support-Zeitraums erreicht
+hat, fällt die Wahl auf ROS~Humble als die aktive Long-Term-Support-Version.
+Damit ist Ubuntu~22.04 als Betriebssystem vorgegeben.
+
+Diese Festlegung erweist sich auch für die zweite Anforderung als
+geeignet. Ubuntu~22.04 stellt aktuelle NVIDIA-Grafikkartentreiber
+unmittelbar über die offiziellen Paketquellen bereit, ohne dass
+zusätzliche Drittanbieter-Repositories oder manuelle Treiberinstallationen
+notwendig sind. Die verfügbaren Treiber unterstützen aktuelle
+CUDA-Versionen, unter denen GroundingDINO seine eigenen CUDA-Erweiterungen
+kompiliert und SAM die GPU-Inferenz ausführt. Die Kombination aus
+naoqi-bedingter OS-Wahl und modernen GPU-Treibern trifft sich damit
+auf Ubuntu~22.04 als gemeinsamem Nenner.
+
+
 == Kommunikation zwischen Computer, NaoBridge und Roboter-Topics <kommunikation_kapitel>
 
 Während @ros_nodes ausschließlich die logische Sicht auf die ROS-Nodes zeigt,
