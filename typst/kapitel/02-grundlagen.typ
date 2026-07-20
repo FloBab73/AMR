@@ -20,6 +20,11 @@ jeweils eine Auflösung von bis zu 1280×960 Pixeln bei 30 fps liefern.
 An den Fußsohlen sind binäre Bumpersensoren verbaut, die einen Kontakt
 mit einem Objekt am Boden detektieren.
 
+#figure(
+  image("../bilder/Nao_vorstellung.jpg", width: 52%),
+  caption: [NAO mit unmöglichem Testaufbau],
+)
+
 === NAOqi-Framework und Choregraphe
 
 NAOqi ist die zentrale Softwareplattform des NAO. Sie startet beim
@@ -63,7 +68,7 @@ bei Verbindungsaufbau automatisch in den laufenden NAOqi-Broker
 des Roboters eingebunden wird. Der Treiber übersetzt
 NAOqi-Sensordaten in Standard-ROS-Topics. Unter anderem werden die Kamerabilder
 (`/nao_robot/camera/top/image_raw`), Gelenkzustände
-(`/joint_states`) und IMU-Daten verfügbar gemacht und umgekehrt
+(`/joint_states`) und IMU-Daten (Inertial Measurement Unit) verfügbar gemacht und umgekehrt
 Geschwindigkeitsbefehle (`/cmd_vel`) sowie direkte
 Gelenkvorgaben an die NAOqi-Bewegungsmodule weitergeleitet.
 
@@ -122,8 +127,7 @@ Prompts sowie den Umgebungsbedingungen abhängig.
 Das Robot Operating System (ROS) ist kein eigenständiges Betriebssystem,
 sondern ein quelloffenes Middleware-Framework für die Entwicklung von
 Robotersoftware @Quigley2009. Es stellt eine einheitliche
-Kommunikationsinfrastruktur bereit, über die unabhängige Softwaremodule (
-sogenannte _Nodes_) miteinander interagieren können. Jeder Node ist ein
+Kommunikationsinfrastruktur bereit, über die unabhängige Softwaremodule (sogenannte _Nodes_) miteinander interagieren können. Jeder Node ist ein
 eigenständiger Prozess, der eine klar abgegrenzte Aufgabe übernimmt, etwa
 die Bildverarbeitung, die Bewegungssteuerung oder die Sensorauswertung.
 Diese modulare Architektur fördert Wiederverwendbarkeit und erlaubt es,
@@ -148,3 +152,4 @@ Gleichzeitig ermöglicht der `naoqi_driver` die Anbindung des NAO als
 reguläre ROS-Komponente. Ein erklärtes Projektziel war es dabei, diese
 Architektur nicht nur einzusetzen, sondern deren Grenzen aufgrund von
 Latenz und unvollständiger NAOqi-Abdeckung im praktischen Betrieb zu erproben.
+// der letzte satz ist doppelt mit zeile 70 in 2.1.3

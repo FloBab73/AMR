@@ -50,14 +50,14 @@ KI-gestützte Bilderkennung mit GroundingDINO und SAM eine NVIDIA-GPU mit
 CUDA-Unterstützung und damit aktuelle Grafikkartentreiber. Beide
 Anforderungen lassen sich auf einer gemeinsamen Basis erfüllen.
 
-Der `naoqi_driver2` unterstützt offiziell ausschließlich ROS~Humble und
-ROS~Iron, die beide auf *Ubuntu~22.04~LTS* aufbauen @naoqi_driver2024.
-Neuere Distributionen wie ROS~Jazzy zielen auf Ubuntu~24.04 und werden
+Der `naoqi_driver2` unterstützt offiziell ausschließlich ROS2~Humble und
+ROS2~Iron, die beide auf *Ubuntu~22.04~LTS* aufbauen @naoqi_driver2024.
+Neuere Distributionen wie ROS2~Jazzy zielen auf Ubuntu~24.04 und werden
 vom Treiber nicht unterstützt, weil die vorgelagerten Abhängigkeiten
 (`naoqi_libqi` und `naoqi_bridge_msgs`) für diese Distributionen nicht
 veröffentlicht wurden und die Portierung bislang aussteht.
-Da ROS~Iron bereits das Ende seines Support-Zeitraums erreicht
-hat, fällt die Wahl auf ROS~Humble als die aktive Long-Term-Support-Version.
+Da ROS2~Iron bereits das Ende seines Support-Zeitraums erreicht
+hat, fällt die Wahl auf ROS2~Humble als die aktive Long-Term-Support-Version.
 Damit ist Ubuntu~22.04 als Betriebssystem vorgegeben.
 
 Diese Festlegung erweist sich auch für die zweite Anforderung als
@@ -70,7 +70,7 @@ kompiliert und SAM die GPU-Inferenz ausführt. Die Kombination aus
 naoqi-bedingter OS-Wahl und modernen GPU-Treibern trifft sich damit
 auf Ubuntu~22.04 als gemeinsamem Nenner.
 
-
+// kürzerer titel
 == Kommunikation zwischen Computer, NaoBridge und Roboter-Topics <kommunikation_kapitel>
 
 Während @ros_nodes ausschließlich die logische Sicht auf die ROS-Nodes zeigt,
@@ -89,7 +89,7 @@ wird kein eigener Code ausgeführt.
 
 Der Grund für diese Aufteilung liegt in der Rechenleistung. Die Objekterkennung
 mit Grounding DINO und SAM benötigt eine GPU, über die der Nao nicht verfügt.
-Der Bildstrom wird deshalb zum Laptop übertragen, dort ausgewertet, und
+Die Bilder werden deshalb zum Laptop übertragen, dort ausgewertet, und
 lediglich das Ergebnis der Auswertung, ein kurzer Steuerbefehl, wird
 zurückgesendet. Der Roboter bleibt in dieser Architektur ein reiner Sensor- und
 Aktorknoten.

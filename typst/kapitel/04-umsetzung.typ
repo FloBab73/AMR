@@ -150,8 +150,8 @@ Laufsteuerung des Nao.
 
 Alle übrigen Bewegungen, das Senken des Kopfes, das Hinsetzen, das Greifen und
 das Aufstehen, werden dagegen als aufgezeichnete Sequenzen über das Topic
-`/joint_angles` abgespielt. Sie entstanden, indem der Roboter von Hand in die
-gewünschten Zwischenposen gebracht, die dabei über `/joint_states` gemeldeten
+#box[`/joint_angles`] abgespielt. Sie entstanden, indem der Roboter von Hand in die
+gewünschten Zwischenposen gebracht, die dabei über #box[`/joint_states`] gemeldeten
 Gelenkwinkel aufgezeichnet und anschließend manuell nachbearbeitet wurden. Jede
 Sequenz liegt als Textdatei aus wiederholten Blöcken von Gelenknamen und
 zugehörigen Winkeln vor, wobei nicht zwingend alle 26 Gelenke angesteuert werden
@@ -169,7 +169,7 @@ Eine Besonderheit ist das Zurückführen in die Ausgangshaltung. Da die
 aufgezeichneten Sequenzen von einer definierten Startpose ausgehen, würde ein
 direkter Sprung aus einer beliebigen aktuellen Haltung dorthin ruckartig und
 potenziell destabilisierend wirken. Daher wird vor jedem Greifvorgang die
-aktuelle Gelenkstellung aus den zwischengespeicherten `/joint_states` ausgelesen
+aktuelle Gelenkstellung aus den zwischengespeicherten #box[`/joint_states`] ausgelesen
 und zur Laufzeit eine Übergangsbewegung zur ersten Pose der Hinsetz-Sequenz
 erzeugt. Diese besteht aus 80 Zwischenposen, die über eine Smoothstep-Funktion
 statt linear interpoliert werden, sodass die Bewegung sanft beschleunigt und
