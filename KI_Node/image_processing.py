@@ -20,15 +20,17 @@ def draw_result_on_image(image, object, direction):
             thickness=1,
         )
 
-        # coords = object["coords"]
-        # for coord in coords:
-        #     color = cv_img[coord[0], coord[1]]
+        cv_img[120, 160] = [255, 0 , 0]
 
-        #     color[1] = color[1]/2
-        #     cv_img[coord[0], coord[1]] = color
+        coords = object["coords"]
+        for coord in coords:
+            color = cv_img[coord[0], coord[1]]
 
-        # cy, cx = coords.mean(axis=0).astype(int)
-        # cv_img[cx, cy] = [255, 0 , 0]
+            color[1] = color[1]/2
+            cv_img[coord[0], coord[1]] = color
+
+        cy, cx = coords.mean(axis=0).astype(int)
+        cv_img[cy, cx] = [255, 0 , 0]
 
     cv2.imwrite(f"./out/result_{datetime.now().time()}_{direction}.jpg", cv_img)
     # return image

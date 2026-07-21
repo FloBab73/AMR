@@ -238,10 +238,13 @@ class MotionControl(Node):
 
     def on_bumper_press(self, msg):
         print(f"Bumper {msg.bumper} was pressed in motion control")
+
+        if self.bumperRight or self.bumperLeft:
+            return
         if msg.bumper == 0:
             self.bumperRight = True
         else:
-            self.bumperRight = False
+            self.bumperLeft = True
 
     def on_command(self, msg: String):
         try:
