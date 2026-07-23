@@ -71,7 +71,7 @@ naoqi-bedingter OS-Wahl und modernen GPU-Treibern trifft sich damit
 auf Ubuntu~22.04 als gemeinsamem Nenner.
 
 // kürzerer titel
-== Kommunikation zwischen Computer, NaoBridge und Roboter-Topics <kommunikation_kapitel>
+== Kommunikationsablauf <kommunikation_kapitel>
 
 Während @ros_nodes ausschließlich die logische Sicht auf die ROS-Nodes zeigt,
 stellt @kommunikation das Gesamtbild dar, also welche Komponente auf welchem Gerät

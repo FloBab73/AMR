@@ -2,7 +2,7 @@
 
 = Grundlagen
 
-== Nao Roboter (Choregraphe und NAOqi)
+== Nao Roboter
 
 === Hardware
 
@@ -67,9 +67,9 @@ um einen C++-ROS-Node, der gleichzeitig als NAOqi-Modul agiert und
 bei Verbindungsaufbau automatisch in den laufenden NAOqi-Broker
 des Roboters eingebunden wird. Der Treiber übersetzt
 NAOqi-Sensordaten in Standard-ROS-Topics. Unter anderem werden die Kamerabilder
-(`/nao_robot/camera/top/image_raw`), Gelenkzustände
-(`/joint_states`) und IMU-Daten (Inertial Measurement Unit) verfügbar gemacht und umgekehrt
-Geschwindigkeitsbefehle (`/cmd_vel`) sowie direkte
+(#box[`/nao_robot/camera/top/image_raw`]), Gelenkzustände
+(#box[`/joint_states`]) und IMU-Daten (Inertial Measurement Unit) verfügbar gemacht und umgekehrt
+Geschwindigkeitsbefehle (#box[`/cmd_vel`]) sowie direkte
 Gelenkvorgaben an die NAOqi-Bewegungsmodule weitergeleitet.
 
 Ein wesentliches Ziel des Projekts war es, diese ROS-Integration

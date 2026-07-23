@@ -112,7 +112,7 @@ erzeugt. Auf diese Weise wird aus der kontinuierlichen Bildauswertung ein
 diskretes Kommando (u. a. `rotate_left`, `rotate_right`, `left`, `right`,
 `forward`, `none`) abgeleitet, das die Motion-Node schrittweise in Richtung
 des Zielobjekts navigieren lässt.
-== Motion Node (Bewegungen) <motion_node>
+== Motion Node <motion_node>
 
 // Umsetzung der Bewegungssteuerung: Kommandoverarbeitung, Laufen, abgespielte
 // Bewegungssequenzen, bumpergetriggerter Greifvorgang.
@@ -124,8 +124,8 @@ Gelenkansteuerung anlegt und anschließend auf eingehende Kommandos wartet. Da
 ohne Abonnenten auf dem Gelenk-Topic alle Nachrichten verworfen würden, ohne
 dass sich der Roboter bewegt, wartet die Node zunächst auf die Verbindung der
 `naoqi_driver`-Brücke und weist andernfalls explizit darauf hin. Neben den
-Kommandos abonniert sie die Fußtaster (`/bumper`) sowie die aktuellen
-Gelenkstellungen (`/joint_states`), die fortlaufend zwischengespeichert werden.
+Kommandos abonniert sie die Fußtaster (#box[`/bumper`]) sowie die aktuellen
+Gelenkstellungen (#box[`/joint_states`]), die fortlaufend zwischengespeichert werden.
 
 Die Kommandos werden als JSON-Nachricht übertragen und enthalten neben dem
 eigentlichen Kommando eine Dauer sowie einen Zeitstempel. Letzterer ist
@@ -138,7 +138,7 @@ arbeitet stets nur auf der aktuellsten Bildauswertung.
 
 Für die Ausführung werden zwei unterschiedliche Mechanismen eingesetzt. Die
 Fortbewegungskommandos (`forward`, `left`, `right`, `rotate_left`,
-`rotate_right`) werden auf den Geschwindigkeitsbefehl `/cmd_vel` abgebildet:
+`rotate_right`) werden auf den Geschwindigkeitsbefehl #box[`/cmd_vel`] abgebildet:
 Eine Twist-Nachricht mit der gewünschten Linear- oder Winkelgeschwindigkeit wird
 publiziert, für die im Kommando angegebene Dauer gewartet und anschließend eine
 Nullgeschwindigkeit gesendet, um den Roboter anzuhalten. Die Schrittlänge ergibt
